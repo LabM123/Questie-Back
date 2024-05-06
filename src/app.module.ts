@@ -14,6 +14,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { DataSourceOptions } from 'typeorm';
 import { StatsModule } from './modules/stats/stats.module';
 import { EnrolmentsModule } from './modules/enrolments/enrolments.module';
+import { AuthModule } from './modules/auth/auth.module';
 import typeOrmConfig from './config/typeorm';
 
 @Module({
@@ -37,6 +38,7 @@ import typeOrmConfig from './config/typeorm';
     InvoicesModule,
     StatsModule,
     EnrolmentsModule,
+    AuthModule,
   ],
   controllers: [AppController],
   providers: [AppService],
