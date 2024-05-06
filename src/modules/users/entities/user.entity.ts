@@ -11,9 +11,11 @@ import {
   JoinColumn,
   ManyToMany,
   JoinTable,
+  Unique,
 } from 'typeorm';
 
 @Entity()
+@Unique(['username', 'email'])
 export class User {
   @PrimaryGeneratedColumn('uuid')
   id: string;
