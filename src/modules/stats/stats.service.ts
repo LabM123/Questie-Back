@@ -3,7 +3,7 @@ import { Stats } from 'fs';
 
 @Injectable()
 export class StatsService {
-  create() {
+  create(statData: Partial<Stats>) {
     return 'This action adds a new stat';
   }
 
