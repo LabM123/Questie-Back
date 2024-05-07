@@ -1,10 +1,9 @@
 import { Injectable } from '@nestjs/common';
-import { CreateStatDto } from './dto/create-stat.dto';
-import { UpdateStatDto } from './dto/update-stat.dto';
+import { Stats } from 'fs';
 
 @Injectable()
 export class StatsService {
-  create(createStatDto: CreateStatDto) {
+  create(statData: Partial<Stats>) {
     return 'This action adds a new stat';
   }
 
@@ -16,7 +15,7 @@ export class StatsService {
     return `This action returns a #${id} stat`;
   }
 
-  update(id: number, updateStatDto: UpdateStatDto) {
+  update(id: number, statData: Partial<Stats>) {
     return `This action updates a #${id} stat`;
   }
 
