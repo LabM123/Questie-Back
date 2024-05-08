@@ -16,6 +16,7 @@ import { StatsModule } from './modules/stats/stats.module';
 import { EnrolmentsModule } from './modules/enrolments/enrolments.module';
 import { AuthModule } from './modules/auth/auth.module';
 import typeOrmConfig from './config/typeorm';
+import { JwtModule } from '@nestjs/jwt';
 
 @Module({
   imports: [
@@ -27,6 +28,12 @@ import typeOrmConfig from './config/typeorm';
       inject: [ConfigService],
       useFactory: (configService: ConfigService) =>
         configService.get('typeorm') as DataSourceOptions,
+    }),
+    JwtModule.register({
+      global: true,
+      // secret: process.env.JWT_SECRET || "secret",
+      secret: "secret",
+      signOptions: { expiresIn: '2h' },
     }),
     UsersModule,
     ProductsModule,
