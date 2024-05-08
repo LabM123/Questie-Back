@@ -1,26 +1,41 @@
-import { Injectable } from '@nestjs/common';
-import { CreateAuthDto } from './dto/create-auth.dto';
-import { UpdateAuthDto } from './dto/update-auth.dto';
+import { BadRequestException, Injectable } from '@nestjs/common';
+import { Repository } from 'typeorm';
+import { User } from '../users/entities/user.entity';
+import * as bcrypt from "bcrypt";
+import { JwtService } from '@nestjs/jwt';
+import { CreateUserDto } from './dto/CreateUser.dto';
+import { InjectRepository } from '@nestjs/typeorm';
 
 @Injectable()
 export class AuthService {
-  create(createAuthDto: CreateAuthDto) {
-    return 'This action adds a new auth';
-  }
+  constructor(@InjectRepository(User) private usersRepository: Repository<User>, private readonly jwtService: JwtService){}
 
-  findAll() {
-    return `This action returns all auth`;
+  async loginUser({username, password}){
+    try {
+      if(!username || !password) throw new BadRequestException('Incomplete information');
+      const user = await this.usersRepository.findOne({where: {username: username}});
+      if(!user) throw new BadRequestException('Wrong email or password');
+      const validPassword = await bcrypt.compare(password, user.password);
+      if(!validPassword) throw new BadRequestException('Wrong email or password');
+      const payload = {id: user.id, email: user.email, isAdmin: user.role}
+      const token = this.jwtService.sign(payload);
+      return {token, message: "Login successful"};
+    } catch (error: any) {
+      throw new BadRequestException(error.message);
+    }
   }
-
-  findOne(id: number) {
-    return `This action returns a #${id} auth`;
-  }
-
-  update(id: number, updateAuthDto: UpdateAuthDto) {
-    return `This action updates a #${id} auth`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} auth`;
+  
+  async registerUser(user: CreateUserDto){
+    try {
+      const foundedUser = await this.usersRepository.findOne({where: {email: user.email}});
+      if(foundedUser) throw new BadRequestException('Try another email');
+      const hashedPassword = await bcrypt.hash(user.password, 10);
+      if(!hashedPassword) throw new BadRequestException('Couldnt hash the password');
+      const newUser = await this.usersRepository.save({...user, password: hashedPassword});
+      const {password, ...userWithoutPassword} = newUser;
+      return userWithoutPassword;
+    } catch (error: any) {
+      throw new BadRequestException(error.message);
+    }
   }
 }
