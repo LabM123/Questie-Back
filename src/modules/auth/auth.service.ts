@@ -17,7 +17,7 @@ export class AuthService {
       if(!user) throw new BadRequestException('Wrong email or password');
       const validPassword = await bcrypt.compare(password, user.password);
       if(!validPassword) throw new BadRequestException('Wrong email or password');
-      const payload = {id: user.id, email: user.email, isAdmin: user.role}
+      const payload = {id: user.id, email: user.email, isAdmin: user.role, sub: user.id};
       const token = this.jwtService.sign(payload);
       return {token, message: "Login successful"};
     } catch (error: any) {
