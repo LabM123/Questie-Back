@@ -27,38 +27,42 @@ export class ProductsService {
 
   async create(createProductDto: CreateProductDto): Promise<Product> {
     const { polymorphicEntityId, polymorphicEntityType } = createProductDto;
-    if (
-      !['Course', 'Module', 'Lesson', 'Content'].includes(polymorphicEntityType)
-    ) {
-      throw new NotFoundException('Invalid entity type');
-    }
+    if (polymorphicEntityId && polymorphicEntityType) {
+      if (
+        !['Course', 'Module', 'Lesson', 'Content'].includes(
+          polymorphicEntityType,
+        )
+      ) {
+        throw new NotFoundException('Invalid entity type');
+      }
 
-    let entity = null;
-    switch (polymorphicEntityType) {
-      case 'course':
-        entity = await this.courseRepository.findOneBy({
-          id: polymorphicEntityId,
-        });
-        break;
-      case 'module':
-        entity = await this.moduleRepository.findOneBy({
-          id: polymorphicEntityId,
-        });
-        break;
-      case 'lesson':
-        entity = await this.lessonRepository.findOneBy({
-          id: polymorphicEntityId,
-        });
-        break;
-      case 'content':
-        entity = await this.contentRepository.findOneBy({
-          id: polymorphicEntityId,
-        });
-        break;
-    }
+      let entity = null;
+      switch (polymorphicEntityType) {
+        case 'course':
+          entity = await this.courseRepository.findOneBy({
+            id: polymorphicEntityId,
+          });
+          break;
+        case 'module':
+          entity = await this.moduleRepository.findOneBy({
+            id: polymorphicEntityId,
+          });
+          break;
+        case 'lesson':
+          entity = await this.lessonRepository.findOneBy({
+            id: polymorphicEntityId,
+          });
+          break;
+        case 'content':
+          entity = await this.contentRepository.findOneBy({
+            id: polymorphicEntityId,
+          });
+          break;
+      }
 
-    if (!entity) {
-      throw new NotFoundException(`Entity not found`);
+      if (!entity) {
+        throw new NotFoundException(`Entity not found`);
+      }
     }
 
     const newProduct = this.productRepository.create(createProductDto);
@@ -95,6 +99,7 @@ export class ProductsService {
       ...updateProductDto,
     });
   }
+
   async remove(id: string): Promise<UpdateResult> {
     const product = this.productRepository.findOneBy({ id });
 
