@@ -39,7 +39,7 @@ export class User {
   })
   role: string;
 
-  @OneToOne(() => Stats, (stats) => stats.user_id)
+  @OneToOne(() => Stats, (stats) => stats.user)
   @JoinColumn({ name: 'stats_id' })
   stats: Stats;
 
