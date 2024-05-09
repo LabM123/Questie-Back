@@ -24,9 +24,6 @@ export class Invoice {
   total: number;
 
   @Column()
-  product_id: string;
-
-  @Column()
   status: string;
 
   @OneToOne(() => Product)

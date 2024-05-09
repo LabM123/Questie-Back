@@ -10,11 +10,7 @@ import { Module as ModuleEntity } from '../modules/entities/module.entity';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([Product]),
-    TypeOrmModule.forFeature([Course]),
-    TypeOrmModule.forFeature([ModuleEntity]),
-    TypeOrmModule.forFeature([Content]),
-    TypeOrmModule.forFeature([Lesson]),
+    TypeOrmModule.forFeature([Product, Course, ModuleEntity, Content, Lesson]),
   ],
   controllers: [ProductsController],
   providers: [ProductsService],
