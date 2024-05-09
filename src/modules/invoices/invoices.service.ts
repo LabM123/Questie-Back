@@ -48,7 +48,7 @@ export class InvoicesService {
       }
   }
 
-  async getInvoiceById(id){
+  async getInvoiceById(id: string){
       try {
           const foundedInvoice = await this.invoicesRepository.findOne({where: {id}});
           if(!foundedInvoice) throw new BadRequestException('Invoice not found');
@@ -58,7 +58,7 @@ export class InvoicesService {
       }
   }
 
-  async updateToCompleted(id){
+  async updateToCompleted(id: string){
       try {
           const foundedInvoice = await this.invoicesRepository.findOne({where: {id}});
           if(!foundedInvoice) throw new BadRequestException('Invoice not found');
@@ -71,7 +71,7 @@ export class InvoicesService {
       }
   }
 
-  async updateToPending(id){
+  async updateToPending(id: string){
       try {
           const foundedInvoice = await this.invoicesRepository.findOne({where: {id}});
           if(!foundedInvoice) throw new BadRequestException('Invoice not found');
@@ -84,7 +84,7 @@ export class InvoicesService {
       }
   }
 
-  async updateToCancelled(id){
+  async updateToCancelled(id: string){
       try {
           const foundedInvoice = await this.invoicesRepository.findOne({where: {id}});
           if(!foundedInvoice) throw new BadRequestException('Invoice not found');
@@ -97,7 +97,7 @@ export class InvoicesService {
       }
   }
 
-  async updateInvoice(id, updateInvoiceDto: UpdateInvoiceDto){
+  async updateInvoice(id: string, updateInvoiceDto: UpdateInvoiceDto){
       try {
           const foundedInvoice = await this.invoicesRepository.findOne({where: {id}});
           if(!foundedInvoice) throw new BadRequestException('Invoice not found');
@@ -109,7 +109,7 @@ export class InvoicesService {
       }
   }
 
-  async deleteInvoice(id){
+  async deleteInvoice(id: string){
       try {
           const foundedInvoice = await this.invoicesRepository.findOne({where: {id}});
           if(!foundedInvoice) throw new BadRequestException('Invoice not found');

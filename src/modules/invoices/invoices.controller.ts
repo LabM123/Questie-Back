@@ -22,7 +22,7 @@ export class InvoicesController {
   }
   
   @Get(':id')
-  findOne(@Param('id') id: ParseUUIDPipe) {
+  findOne(@Param('id', ParseUUIDPipe) id: string) {
     return this.invoicesService.getInvoiceById(id);
   }
 
@@ -32,27 +32,27 @@ export class InvoicesController {
   }
   
   @Put('pending/:id')
-  updateToPending(@Param('id') id: ParseUUIDPipe) {
+  updateToPending(@Param('id', ParseUUIDPipe) id: string) {
     return this.invoicesService.updateToPending(id);
   }
 
   @Put('cancelled/:id')
-  updateToCancelled(@Param('id') id: ParseUUIDPipe) {
+  updateToCancelled(@Param('id', ParseUUIDPipe) id: string) {
     return this.invoicesService.updateToCancelled(id);
   }
 
   @Put('completed/:id')
-  updateToCompleted(@Param('id') id: ParseUUIDPipe) {
+  updateToCompleted(@Param('id', ParseUUIDPipe) id: string) {
     return this.invoicesService.updateToCompleted(id);
   }
 
   @Put(':id')
-  update(@Param('id') id: ParseUUIDPipe, @Body() updateInvoiceDto: UpdateInvoiceDto) {
+  update(@Param('id', ParseUUIDPipe) id: string, @Body() updateInvoiceDto: UpdateInvoiceDto) {
     return this.invoicesService.updateInvoice(id, updateInvoiceDto);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: ParseUUIDPipe) {
+  remove(@Param('id', ParseUUIDPipe) id: string) {
     return this.invoicesService.deleteInvoice(id);
   }
 }
