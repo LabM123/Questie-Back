@@ -25,6 +25,11 @@ export class ProductsController {
     return this.productsService.findAll();
   }
 
+  @Get('/admin')
+  findAllWithDeleted() {
+    return this.productsService.findAll(true);
+  }
+
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.productsService.findOne(id);
