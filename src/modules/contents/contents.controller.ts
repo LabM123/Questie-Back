@@ -10,7 +10,9 @@ import {
 import { ContentsService } from './contents.service';
 import { CreateContentDto } from './dto/create-content.dto';
 import { UpdateContentDto } from './dto/update-content.dto';
+import { ApiTags } from '@nestjs/swagger';
 
+@ApiTags("Contents")
 @Controller('contents')
 export class ContentsController {
   constructor(private readonly contentsService: ContentsService) {}
