@@ -18,6 +18,7 @@ import { AuthModule } from './modules/auth/auth.module';
 import typeOrmConfig from './config/typeorm';
 import { JwtModule } from '@nestjs/jwt';
 import { PaypalModule } from './modules/payments/paypal/paypal.module';
+import { PaymentsModule } from './modules/payments/payments.module';
 
 @Module({
   imports: [
@@ -47,6 +48,7 @@ import { PaypalModule } from './modules/payments/paypal/paypal.module';
     EnrolmentsModule,
     AuthModule,
     PaypalModule,
+    PaymentsModule,
   ],
   controllers: [AppController],
   providers: [AppService],
