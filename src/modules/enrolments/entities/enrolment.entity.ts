@@ -2,7 +2,6 @@ import { Course } from 'src/modules/courses/entities/course.entity';
 import { User } from 'src/modules/users/entities/user.entity';
 import {
   PrimaryGeneratedColumn,
-  Column,
   ManyToOne,
   CreateDateColumn,
   UpdateDateColumn,
@@ -14,15 +13,6 @@ import { Entity } from 'typeorm/decorator/entity/Entity';
 export class Enrolment {
   @PrimaryGeneratedColumn('uuid')
   id: string;
-
-  @Column()
-  user_id: string;
-
-  @Column()
-  course_id: string;
-
-  @Column()
-  progress_id: string;
 
   @ManyToOne(() => User)
   user: User;
