@@ -1,7 +1,6 @@
 import {
   Controller,
   Get,
-  Post,
   Body,
   Put,
   Param,
@@ -9,7 +8,6 @@ import {
   ParseUUIDPipe,
 } from '@nestjs/common';
 import { InvoicesService } from './invoices.service';
-import { CreateInvoiceDto } from './dto/create-invoice.dto';
 import { UpdateInvoiceDto } from './dto/update-invoice.dto';
 import { ApiTags } from '@nestjs/swagger';
 
@@ -17,22 +15,17 @@ import { ApiTags } from '@nestjs/swagger';
 @Controller('invoices')
 export class InvoicesController {
   constructor(private readonly invoicesService: InvoicesService) {}
-  
+
   @Get()
   findAll() {
     return this.invoicesService.getAllInvoices();
   }
-  
+
   @Get(':id')
   findOne(@Param('id', ParseUUIDPipe) id: string) {
     return this.invoicesService.getInvoiceById(id);
   }
 
-  @Post()
-  create(@Body() createInvoiceDto: CreateInvoiceDto) {
-    return this.invoicesService.createInvoice(createInvoiceDto);
-  }
-  
   @Put('pending/:id')
   updateToPending(@Param('id', ParseUUIDPipe) id: string) {
     return this.invoicesService.updateToPending(id);
@@ -49,7 +42,10 @@ export class InvoicesController {
   }
 
   @Put(':id')
-  update(@Param('id', ParseUUIDPipe) id: string, @Body() updateInvoiceDto: UpdateInvoiceDto) {
+  update(
+    @Param('id', ParseUUIDPipe) id: string,
+    @Body() updateInvoiceDto: UpdateInvoiceDto,
+  ) {
     return this.invoicesService.updateInvoice(id, updateInvoiceDto);
   }
 
