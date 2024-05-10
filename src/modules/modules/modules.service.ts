@@ -23,7 +23,7 @@ export class ModulesService {
     }
 
     const newModule = new Module();
-    newModule.course_id = foundCourse;
+    newModule.course = foundCourse;
     newModule.title = createModuleDto.title;
 
     const savedModule = await this.moduleRepository.save(newModule);
