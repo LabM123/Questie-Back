@@ -6,39 +6,43 @@ import {
   Put,
   Param,
   Delete,
-} from '@nestjs/common';
-import { LessonsService } from './lessons.service';
-import { CreateLessonDto } from './dto/create-lesson.dto';
-import { UpdateLessonDto } from './dto/update-lesson.dto';
-import { ApiTags } from '@nestjs/swagger';
+  ParseUUIDPipe,
+} from "@nestjs/common";
+import { LessonsService } from "./lessons.service";
+import { CreateLessonDto } from "./dto/create-lesson.dto";
+import { UpdateLessonDto } from "./dto/update-lesson.dto";
+import { ApiTags } from "@nestjs/swagger";
 
 @ApiTags("Lessons")
-@Controller('lessons')
+@Controller("lessons")
 export class LessonsController {
   constructor(private readonly lessonsService: LessonsService) {}
 
-  @Post()
-  create(@Body() createLessonDto: CreateLessonDto) {
-    return this.lessonsService.create(createLessonDto);
-  }
-
   @Get()
   findAll() {
-    return this.lessonsService.findAll();
+    return this.lessonsService.getAllLessons();
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.lessonsService.findOne(+id);
+  @Get(":id")
+  findOne(@Param("id", ParseUUIDPipe) id: string) {
+    return this.lessonsService.getLessonById(id);
   }
 
-  @Put(':id')
-  update(@Param('id') id: string, @Body() updateLessonDto: UpdateLessonDto) {
-    return this.lessonsService.update(+id, updateLessonDto);
+  @Post()
+  create(@Body() createCourseDto: CreateLessonDto) {
+    return this.lessonsService.createLesson(createCourseDto);
   }
 
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.lessonsService.remove(+id);
+  @Put(":id")
+  update(
+    @Param("id", ParseUUIDPipe) id: string,
+    @Body() updateCourseDto: UpdateLessonDto
+  ) {
+    return this.lessonsService.updateLesson(id, updateCourseDto);
+  }
+
+  @Delete(":id")
+  remove(@Param("id", ParseUUIDPipe) id: string) {
+    return this.lessonsService.removeLesson(id);
   }
 }

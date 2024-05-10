@@ -6,39 +6,43 @@ import {
   Put,
   Param,
   Delete,
-} from '@nestjs/common';
-import { ModulesService } from './modules.service';
-import { CreateModuleDto } from './dto/create-module.dto';
-import { UpdateModuleDto } from './dto/update-module.dto';
-import { ApiTags } from '@nestjs/swagger';
+  ParseUUIDPipe,
+} from "@nestjs/common";
+import { ModulesService } from "./modules.service";
+import { CreateModuleDto } from "./dto/create-module.dto";
+import { UpdateModuleDto } from "./dto/update-module.dto";
+import { ApiTags } from "@nestjs/swagger";
 
 @ApiTags("Modules")
-@Controller('modules')
+@Controller("modules")
 export class ModulesController {
   constructor(private readonly modulesService: ModulesService) {}
 
   @Post()
   create(@Body() createModuleDto: CreateModuleDto) {
-    return this.modulesService.create(createModuleDto);
+    return this.modulesService.createModule(createModuleDto);
   }
 
   @Get()
   findAll() {
-    return this.modulesService.findAll();
+    return this.modulesService.getAllModules();
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.modulesService.findOne(+id);
+  @Get(":id")
+  findOne(@Param("id", ParseUUIDPipe) id: string) {
+    return this.modulesService.getModulesById(id);
   }
 
-  @Put(':id')
-  update(@Param('id') id: string, @Body() updateModuleDto: UpdateModuleDto) {
-    return this.modulesService.update(+id, updateModuleDto);
+  @Put(":id")
+  update(
+    @Param("id", ParseUUIDPipe) id: string,
+    @Body() updateModuleDto: UpdateModuleDto
+  ) {
+    return this.modulesService.updateModule(id, updateModuleDto);
   }
 
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.modulesService.remove(+id);
+  @Delete(":id")
+  remove(@Param("id", ParseUUIDPipe) id: string) {
+    return this.modulesService.removeModule(id);
   }
 }
