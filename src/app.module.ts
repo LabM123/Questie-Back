@@ -1,6 +1,4 @@
 import { Module } from '@nestjs/common';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
 import { UsersModule } from './modules/users/users.module';
 import { ProductsModule } from './modules/products/products.module';
 import { CategoriesModule } from './modules/categories/categories.module';
@@ -17,6 +15,7 @@ import { EnrolmentsModule } from './modules/enrolments/enrolments.module';
 import { AuthModule } from './modules/auth/auth.module';
 import typeOrmConfig from './config/typeorm';
 import { JwtModule } from '@nestjs/jwt';
+import { UploadfileModule } from './modules/uploadfile/uploadfile.module';
 import { PaypalModule } from './modules/payments/paypal/paypal.module';
 import { PaymentsModule } from './modules/payments/payments.module';
 
@@ -47,10 +46,11 @@ import { PaymentsModule } from './modules/payments/payments.module';
     StatsModule,
     EnrolmentsModule,
     AuthModule,
+    UploadfileModule,
     PaypalModule,
     PaymentsModule,
   ],
-  controllers: [AppController],
-  providers: [AppService],
+  controllers: [],
+  providers: [],
 })
 export class AppModule {}

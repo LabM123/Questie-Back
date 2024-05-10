@@ -16,9 +16,6 @@ export class Content {
   id: string;
 
   @Column()
-  lesson_id: string;
-
-  @Column()
   type: string;
 
   @Column('json')

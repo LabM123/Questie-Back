@@ -2,8 +2,8 @@ import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Course } from './entities/course.entity';
 import { Repository } from 'typeorm';
-import { CreateCategoryDto } from '../categories/dto/create-category.dto';
-import { UpdateCategoryDto } from '../categories/dto/update-category.dto';
+import { CreateCourseDto } from './dto/create-course.dto';
+import { UpdateCourseDto } from './dto/update-course.dto';
 
 @Injectable()
 export class CoursesService {
@@ -32,14 +32,17 @@ export class CoursesService {
     }
   }
 
+
   async createCourse(createCourseDto: CreateCategoryDto) {
     try {
       const newCourse = await this.coursesRepository.save(createCourseDto);
       return newCourse;
     } catch (error: any) {
       throw new BadRequestException(error.message);
+
     }
   }
+
 
   async updateCourse(id: string, updateCourseDto: UpdateCategoryDto) {
     try {
