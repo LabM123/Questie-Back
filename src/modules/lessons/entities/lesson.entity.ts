@@ -18,9 +18,6 @@ export class Lesson {
   id: string;
 
   @Column()
-  module_id: string;
-
-  @Column()
   order: number;
 
   @Column({ default: 0 })

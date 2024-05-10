@@ -22,7 +22,7 @@ export class Module {
 
   @ManyToOne(() => Course)
   @JoinColumn({ name: 'course_id' })
-  course: Course;
+  course_id: Course;
 
   @OneToMany(() => Lesson, (lesson) => lesson.module)
   lessons: Lesson[];
