@@ -34,15 +34,9 @@ export class CategoriesService {
 
   async create(createCategoryDto: CreateCategoryDto) {
     try {
-      const { courses_id } = createCategoryDto;
-      const courses = [];
-      for (let i = 0; i < courses_id.length; i++) {
-        const course_id = courses_id[i];
-        const foundedCourse = await this.coursesRepository.findOne({ where: { id: course_id } });
-        if (!foundedCourse) throw new BadRequestException(`Course not found, id: ${course_id}`);
-        courses.push(foundedCourse);
-      }
-      const newCategory = this.categoriesRepository.create({ name: createCategoryDto.name, courses });
+      const foundedCategory = await this.categoriesRepository.findOne({where: {name: createCategoryDto.name}});
+      if(foundedCategory) throw new BadRequestException('Category already exists')
+      const newCategory = this.categoriesRepository.create({ name: createCategoryDto.name });
       const savedCategory = await this.categoriesRepository.save(newCategory);
       return savedCategory;
     } catch (error: any) {
@@ -74,10 +68,14 @@ export class CategoriesService {
   }
 
   async remove(id: string) {
-    const foundedCategory = await this.categoriesRepository.findOne({where: {id}});
-    if(!foundedCategory) throw new BadRequestException('Category not found')
-    foundedCategory.deleted_at = new Date();
-    const deletedCategory = await this.categoriesRepository.update(id, foundedCategory);
-    return deletedCategory;
+    try {
+      const foundedCategory = await this.categoriesRepository.findOne({where: {id}});
+      if(!foundedCategory) throw new BadRequestException('Category not found')
+      foundedCategory.deleted_at = new Date();
+      const deletedCategory = await this.categoriesRepository.update(id, foundedCategory);
+      return deletedCategory;
+    } catch (error: any) {
+      throw new BadRequestException(error.message)
+    }
   }
 }

@@ -1,4 +1,4 @@
-import { IsArray, IsNotEmpty, IsString, MaxLength, MinLength } from "class-validator"
+import { IsNotEmpty, IsString, MaxLength, MinLength } from "class-validator"
 
 export class CreateCategoryDto {
     @IsNotEmpty()
@@ -6,8 +6,4 @@ export class CreateCategoryDto {
     @MaxLength(50)
     @MinLength(10)
     name: string
-
-    @IsNotEmpty()
-    @IsArray()
-    courses_id: string[]
 }
