@@ -23,6 +23,11 @@ export class CoursesController {
     return this.coursesService.getAllCourses();
   }
 
+  @Get('/admin')
+  findAllWithDeleted() {
+    return this.coursesService.getAllCourses(true);
+  }
+
   @Get(':id')
   findOne(@Param('id', ParseUUIDPipe) id: string) {
     return this.coursesService.getCourseById(id);
@@ -34,7 +39,10 @@ export class CoursesController {
   }
 
   @Put(':id')
-  update(@Param('id', ParseUUIDPipe) id: string, @Body() updateCourseDto: UpdateCourseDto) {
+  update(
+    @Param('id', ParseUUIDPipe) id: string,
+    @Body() updateCourseDto: UpdateCourseDto,
+  ) {
     return this.coursesService.updateCourse(id, updateCourseDto);
   }
 
