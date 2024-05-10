@@ -6,7 +6,9 @@ import {
   IsUUID,
   IsOptional,
   Length,
+  IsEnum,
 } from 'class-validator';
+import { PolymorphicEntityType } from '../entities/product.entity';
 
 export class CreateProductDto {
   @IsNotEmpty()
@@ -32,6 +34,7 @@ export class CreateProductDto {
   polymorphicEntityId: string;
 
   @IsString()
+  @IsEnum(PolymorphicEntityType)
   @IsOptional()
   polymorphicEntityType: string;
 }

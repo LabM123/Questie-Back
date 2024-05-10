@@ -1,3 +1,4 @@
+import { Enrolment } from 'src/modules/enrolments/entities/enrolment.entity';
 import { Lesson } from 'src/modules/lessons/entities/lesson.entity';
 import { Stats } from 'src/modules/stats/entities/stats.entity';
 import {
@@ -12,6 +13,7 @@ import {
   ManyToMany,
   JoinTable,
   Unique,
+  OneToMany,
 } from 'typeorm';
 
 @Entity()
@@ -42,6 +44,9 @@ export class User {
   @OneToOne(() => Stats, (stats) => stats.user)
   @JoinColumn({ name: 'stats_id' })
   stats: Stats;
+
+  @OneToMany(() => Enrolment, (enrolment) => enrolment.user)
+  enrolments: Enrolment[];
 
   @ManyToMany(() => Lesson)
   @JoinTable({ name: 'progress' })

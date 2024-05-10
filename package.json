@@ -17,7 +17,13 @@
     "test:watch": "jest --watch",
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
-    "test:e2e": "jest --config ./test/jest-e2e.json"
+    "test:e2e": "jest --config ./test/jest-e2e.json",
+    "typeorm": "ts-node ./node_modules/typeorm/cli",
+    "migration:run": "npm run typeorm migration:run -- -d ./src/config/typeorm.ts",
+    "migration:generate": "npm run typeorm -- -d ./src/config/typeorm.ts migration:generate",
+    "migration:create": "npm run typeorm migration:create",
+    "migration:revert": "npm run typeorm migration:revert -- -d ./src/config/typeorm.ts migration:revert",
+    "migration:show": "npm run typeorm migration:show -- -d ./src/config/typeorm.ts migration:show"
   },
   "dependencies": {
     "@nestjs/common": "^10.0.0",
@@ -28,9 +34,12 @@
     "@nestjs/platform-express": "^10.0.0",
     "@nestjs/swagger": "^7.3.1",
     "@nestjs/typeorm": "^10.0.2",
+    "axios": "^1.6.8",
     "bcrypt": "^5.1.1",
+    "buffer-to-stream": "^1.0.0",
     "class-transformer": "^0.5.1",
     "class-validator": "^0.14.1",
+    "cloudinary": "^2.2.0",
     "dotenv": "^16.4.5",
     "multer": "^1.4.5-lts.1",
     "paypal-rest-sdk": "^1.8.1",

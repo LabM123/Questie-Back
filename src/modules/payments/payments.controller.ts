@@ -28,14 +28,16 @@ export class PaymentsController {
   }
 
   @Post('/coins')
+  @Redirect('http://localhost:3000/payments/success', 302)
   async payWithCoins(@Body() createPaymentDto: CreatePaymentDto) {
-    return this.paymentsService.payWithCoins(createPaymentDto);
+    const invoiceId = await this.paymentsService.payWithCoins(createPaymentDto);
+    return { invoiceId };
   }
 
   @Get('/success')
   @Redirect()
-  async success() {
-    await this.paymentsService.success(); //Logica de inscripción a curso o actualización de "stats" de usuario
-    return { url: 'http://localhost:3000/invoices' };
+  async success(@Query('invoiceId') invoiceId: string) {
+    const paidInvoiceId = await this.paymentsService.success(invoiceId);
+    return { url: `http://localhost:3000/invoices/${paidInvoiceId}` };
   }
 }
