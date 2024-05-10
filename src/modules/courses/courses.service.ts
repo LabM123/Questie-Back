@@ -32,19 +32,16 @@ export class CoursesService {
     }
   }
 
-
-  async createCourse(createCourseDto: CreateCategoryDto) {
+  async createCourse(createCourseDto: CreateCourseDto) {
     try {
       const newCourse = await this.coursesRepository.save(createCourseDto);
       return newCourse;
     } catch (error: any) {
       throw new BadRequestException(error.message);
-
     }
   }
 
-
-  async updateCourse(id: string, updateCourseDto: UpdateCategoryDto) {
+  async updateCourse(id: string, updateCourseDto: UpdateCourseDto) {
     try {
       const foundedCourse = await this.coursesRepository.findOne({
         where: { id },
