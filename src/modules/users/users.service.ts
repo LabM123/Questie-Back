@@ -54,7 +54,7 @@ export class UsersService {
     });
   }
 
-  async findAll(withDeleted: boolean = true): Promise<User[]> {
+  async findAll(withDeleted: boolean = false): Promise<User[]> {
     return await this.userRepository.find({ withDeleted });
   }
 
