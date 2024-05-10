@@ -15,6 +15,7 @@ import { EnrolmentsModule } from './modules/enrolments/enrolments.module';
 import { AuthModule } from './modules/auth/auth.module';
 import typeOrmConfig from './config/typeorm';
 import { JwtModule } from '@nestjs/jwt';
+import { UploadfileModule } from './modules/uploadfile/uploadfile.module';
 import { PaypalModule } from './modules/payments/paypal/paypal.module';
 import { PaymentsModule } from './modules/payments/payments.module';
 
@@ -45,6 +46,7 @@ import { PaymentsModule } from './modules/payments/payments.module';
     StatsModule,
     EnrolmentsModule,
     AuthModule,
+    UploadfileModule,
     PaypalModule,
     PaymentsModule,
   ],
