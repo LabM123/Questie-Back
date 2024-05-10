@@ -41,22 +41,22 @@ export class ProductsService {
 
       let entity = null;
       switch (polymorphicEntityType) {
-        case 'course':
+        case 'Course':
           entity = await this.courseRepository.findOne({
             where: { id: polymorphicEntityId },
           });
           break;
-        case 'module':
+        case 'Module':
           entity = await this.moduleRepository.findOne({
             where: { id: polymorphicEntityId },
           });
           break;
-        case 'lesson':
+        case 'Lesson':
           entity = await this.lessonRepository.findOne({
             where: { id: polymorphicEntityId },
           });
           break;
-        case 'content':
+        case 'Content':
           entity = await this.contentRepository.findOne({
             where: { id: polymorphicEntityId },
           });
