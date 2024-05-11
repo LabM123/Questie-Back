@@ -10,15 +10,32 @@ import {
   ManyToMany,
   JoinTable,
   OneToMany,
+  Unique,
 } from 'typeorm';
-
+import { v4 as uuid } from 'uuid';
 @Entity({ name: 'courses' })
+@Unique(['slug'])
 export class Course {
   @PrimaryGeneratedColumn('uuid')
-  id: string;
+  id: string = uuid();
 
   @Column()
   title: string;
+
+  @Column()
+  slug: string;
+
+  @Column()
+  headline: string;
+
+  @Column()
+  description: string;
+
+  @Column()
+  image: string;
+
+  @Column()
+  bg_image: string;
 
   @ManyToMany(() => Category, (category) => category.courses)
   @JoinTable({ name: 'category_course' })
