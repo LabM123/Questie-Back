@@ -39,7 +39,10 @@ export class ModulesService {
   }
 
   async getAllModules(withDeleted: boolean = false) {
-    return await this.moduleRepository.find({ withDeleted });
+    return await this.moduleRepository.find({
+      withDeleted,
+      loadRelationIds: true,
+    });
   }
 
   async getModulesById(id: string) {
@@ -83,6 +86,6 @@ export class ModulesService {
       throw new InternalServerErrorException('Module not deleted');
     }
 
-    return 'Module deleted successfully';
+    return { message: 'Resource succesfully deleted' };
   }
 }
