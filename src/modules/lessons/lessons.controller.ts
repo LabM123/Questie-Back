@@ -23,11 +23,13 @@ import { RolesGuard } from '../auth/guard/roles.guard';
 export class LessonsController {
   constructor(private readonly lessonsService: LessonsService) {}
 
+  @ApiBearerAuth()
   @Get()
+  @UseGuards(AuthGuard)
   findAll() {
     return this.lessonsService.getAllLessons();
   }
-
+  
   @ApiBearerAuth()
   @Get('/admin')
   @Roles(Role.admin)
@@ -36,7 +38,9 @@ export class LessonsController {
     return this.lessonsService.getAllLessons(true);
   }
   
+  @ApiBearerAuth()
   @Get(':id')
+  @UseGuards(AuthGuard)
   findOne(@Param('id', ParseUUIDPipe) id: string) {
     return this.lessonsService.getLessonById(id);
   }

@@ -33,7 +33,8 @@ export class EnrolmentsController {
   
   @ApiBearerAuth()
   @Get()
-  @UseGuards(AuthGuard)
+  @Roles(Role.admin)
+  @UseGuards(AuthGuard, RolesGuard)
   findAll() {
     return this.enrolmentsService.findAll();
   }

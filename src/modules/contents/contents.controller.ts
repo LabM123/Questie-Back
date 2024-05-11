@@ -23,12 +23,16 @@ import { RolesGuard } from '../auth/guard/roles.guard';
 export class ContentsController {
   constructor(private readonly contentsService: ContentsService) {}
 
+  @ApiBearerAuth()
   @Get()
+  @UseGuards(AuthGuard)
   findAll() {
     return this.contentsService.findAll();
   }
-
+  
+  @ApiBearerAuth()
   @Get(':id')
+  @UseGuards(AuthGuard)
   findOne(@Param('id', ParseUUIDPipe) id: string) {
     return this.contentsService.findOne(id);
   }
