@@ -7,42 +7,46 @@ import {
   Param,
   Delete,
   ParseUUIDPipe,
-} from '@nestjs/common';
-import { CategoriesService } from './categories.service';
-import { CreateCategoryDto } from './dto/create-category.dto';
-import { UpdateCategoryDto } from './dto/update-category.dto';
-import { ApiTags } from '@nestjs/swagger';
+} from "@nestjs/common";
+import { CategoriesService } from "./categories.service";
+import { CreateCategoryDto } from "./dto/create-category.dto";
+import { UpdateCategoryDto } from "./dto/update-category.dto";
+import { ApiOperation, ApiTags } from "@nestjs/swagger";
 
 @ApiTags("Categories")
-@Controller('categories')
+@Controller("categories")
 export class CategoriesController {
   constructor(private readonly categoriesService: CategoriesService) {}
-
   @Get()
-  findAll() {
-    return this.categoriesService.findAll();
+  @ApiOperation({ summary: 'Get all categories', description: 'Retrieves all categories from the database.' })
+  async findAll() {
+    return await this.categoriesService.findAll();
   }
 
   @Get(':id')
-  findOne(@Param('id', ParseUUIDPipe) id: string) {
-    return this.categoriesService.findOne(id);
+  @ApiOperation({ summary: 'Get category by ID', description: 'Retrieves a category by its unique identifier.' })
+  async findById(@Param('id', ParseUUIDPipe) id: string) {
+    return await this.categoriesService.findById(id);
   }
 
   @Post()
-  create(@Body() createCategoryDto: CreateCategoryDto) {
-    return this.categoriesService.create(createCategoryDto);
+  @ApiOperation({ summary: 'Create a new category', description: 'Creates a new category in the database.' })
+  async create(@Body() createCategoryDto: CreateCategoryDto) {
+    return await this.categoriesService.create(createCategoryDto);
   }
 
   @Put(':id')
-  update(
+  @ApiOperation({ summary: 'Update category by ID', description: 'Updates a category by its unique identifier.' })
+  async update(
     @Param('id', ParseUUIDPipe) id: string,
     @Body() updateCategoryDto: UpdateCategoryDto,
   ) {
-    return this.categoriesService.update(id, updateCategoryDto);
+    return await this.categoriesService.update(id, updateCategoryDto);
   }
 
   @Delete(':id')
-  remove(@Param('id', ParseUUIDPipe) id: string) {
-    return this.categoriesService.remove(id);
+  @ApiOperation({ summary: 'Delete category by ID', description: 'Deletes a category by its unique identifier.' })
+  async remove(@Param('id', ParseUUIDPipe) id: string) {
+    return await this.categoriesService.remove(id);
   }
 }
