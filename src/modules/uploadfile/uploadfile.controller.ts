@@ -1,12 +1,16 @@
-import { Controller, FileTypeValidator, MaxFileSizeValidator, ParseFilePipe, Post, UploadedFile, UseInterceptors } from '@nestjs/common';
+import { Controller, FileTypeValidator, MaxFileSizeValidator, ParseFilePipe, Post, UploadedFile, UseGuards, UseInterceptors } from '@nestjs/common';
 import { UploadfileService } from './uploadfile.service';
 import { FileInterceptor } from '@nestjs/platform-express';
+import { ApiBearerAuth } from '@nestjs/swagger';
+import { AuthGuard } from '../auth/guard/auth.guard';
 
 @Controller('uploadfile')
 export class UploadfileController {
   constructor(private readonly uploadfileService: UploadfileService) {}
 
+  @ApiBearerAuth()
   @Post()
+  @UseGuards(AuthGuard)
   @UseInterceptors(FileInterceptor('file'))
   uploadFile(
     @UploadedFile(

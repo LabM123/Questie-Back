@@ -7,11 +7,16 @@ import {
   Param,
   Delete,
   ParseUUIDPipe,
+  UseGuards,
 } from '@nestjs/common';
 import { ContentsService } from './contents.service';
 import { CreateContentDto } from './dto/create-content.dto';
 import { UpdateContentDto } from './dto/update-content.dto';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import { Roles } from '../auth/decorators/roles.decorator';
+import { Role } from '../auth/decorators/roles.enum';
+import { AuthGuard } from '../auth/guard/auth.guard';
+import { RolesGuard } from '../auth/guard/roles.guard';
 
 @ApiTags("Contents")
 @Controller('contents')
@@ -28,18 +33,26 @@ export class ContentsController {
     return this.contentsService.findOne(id);
   }
 
+  @ApiBearerAuth()
   @Post()
+  @Roles(Role.admin)
+  @UseGuards(AuthGuard, RolesGuard)
   create(@Body() createContentDto: CreateContentDto) {
     return this.contentsService.create(createContentDto);
   }
-
+  
+  @ApiBearerAuth()
   @Put(':id')
+  @Roles(Role.admin)
+  @UseGuards(AuthGuard, RolesGuard)
   update(@Param('id', ParseUUIDPipe) id: string, @Body() updateContentDto: UpdateContentDto) {
     return this.contentsService.update(id, updateContentDto);
   }
-
+  
+  @ApiBearerAuth()
   @Delete(':id')
-
+  @Roles(Role.admin)
+  @UseGuards(AuthGuard, RolesGuard)
   remove(@Param('id', ParseUUIDPipe) id: string) {
     return this.contentsService.remove(id);
   }

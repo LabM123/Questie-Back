@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post, Query, Redirect } from '@nestjs/common';
+import { Body, Controller, Get, ParseUUIDPipe, Post, Query, Redirect } from '@nestjs/common';
 import { PaymentsService } from './payments.service';
 import { CreatePaymentDto } from './dto/create-payment.dto';
 
@@ -16,8 +16,8 @@ export class PaymentsController {
 
   @Get('/paypal/success')
   async paypalSuccess(
-    @Query('paymentId') paymentId: string,
-    @Query('PayerID') PayerID: string,
+    @Query('paymentId', ParseUUIDPipe) paymentId: string,
+    @Query('PayerID', ParseUUIDPipe) PayerID: string,
   ) {
     return { paymentId, PayerID };
   }
@@ -36,7 +36,7 @@ export class PaymentsController {
 
   @Get('/success')
   @Redirect()
-  async success(@Query('invoiceId') invoiceId: string) {
+  async success(@Query('invoiceId', ParseUUIDPipe) invoiceId: string) {
     const paidInvoiceId = await this.paymentsService.success(invoiceId);
     return { url: `http://localhost:3000/invoices/${paidInvoiceId}` };
   }
