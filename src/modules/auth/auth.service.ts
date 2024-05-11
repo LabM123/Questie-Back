@@ -43,6 +43,7 @@ export class AuthService {
         where: { email: user.email },
       });
       if (foundedUser) throw new BadRequestException('Try another email');
+      if (user.password !== user.confirmPassword) throw new BadRequestException("Both passwords must be the same.")
       const hashedPassword = await bcrypt.hash(user.password, 10);
       if (!hashedPassword)
         throw new BadRequestException('Couldnt hash the password');

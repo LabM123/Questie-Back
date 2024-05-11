@@ -34,6 +34,15 @@ export class User {
   @Column({ default: 'https://placehold.co/200x200' })
   profile_pic: string;
 
+  @Column()
+  firstName: string;
+
+  @Column()
+  lastName: string;
+
+  @Column()
+  birthdate: Date;
+
   @Column({
     type: 'enum',
     enum: ['admin', 'user'],
