@@ -20,6 +20,12 @@ export class Module {
   @Column()
   title: string;
 
+  @Column({ nullable: true, default: 'https://placehold.co/600x400' })
+  imgUrl: string;
+
+  @Column({ nullable: true, default: 'Absolutely amazing module' })
+  description: string;
+
   @ManyToOne(() => Course)
   @JoinColumn({ name: 'course_id' })
   course: Course;
