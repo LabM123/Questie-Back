@@ -28,6 +28,11 @@ export class ModulesController {
     return this.modulesService.getAllModules();
   }
 
+  @Get("/admin")
+  findAllWithDeleted() {
+    return this.modulesService.getAllModules(true);
+  }
+
   @Get(":id")
   findOne(@Param("id", ParseUUIDPipe) id: string) {
     return this.modulesService.getModulesById(id);

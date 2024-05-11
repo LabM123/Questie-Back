@@ -1,25 +1,32 @@
-import { BadRequestException, Injectable } from "@nestjs/common";
-import { CreateModuleDto } from "./dto/create-module.dto";
-import { UpdateModuleDto } from "./dto/update-module.dto";
-import { Module } from "./entities/module.entity";
-import { InjectRepository } from "@nestjs/typeorm";
-import { Repository } from "typeorm";
-import { Course } from "../courses/entities/course.entity";
+import {
+  BadRequestException,
+  Injectable,
+  InternalServerErrorException,
+  NotFoundException,
+} from '@nestjs/common';
+import { CreateModuleDto } from './dto/create-module.dto';
+import { UpdateModuleDto } from './dto/update-module.dto';
+import { Module } from './entities/module.entity';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { Course } from '../courses/entities/course.entity';
 
 @Injectable()
 export class ModulesService {
   constructor(
     @InjectRepository(Module) private moduleRepository: Repository<Module>,
-    @InjectRepository(Course) private courseRepository: Repository<Course>
+    @InjectRepository(Course) private courseRepository: Repository<Course>,
   ) {}
 
   async createModule(createModuleDto: CreateModuleDto) {
     const { course_id } = createModuleDto;
 
-    const foundCourse = await this.courseRepository.findOne({where :{id :course_id}});
+    const foundCourse = await this.courseRepository.findOne({
+      where: { id: course_id },
+    });
 
     if (!foundCourse) {
-      throw new BadRequestException("Course not found");
+      throw new BadRequestException('Course not found');
     }
 
     const newModule = new Module();
@@ -31,26 +38,54 @@ export class ModulesService {
     return savedModule;
   }
 
-  getAllModules() {
-    return this.moduleRepository.find();
+  async getAllModules(withDeleted: boolean = false) {
+    return await this.moduleRepository.find({
+      withDeleted,
+      loadRelationIds: true,
+    });
   }
 
-  getModulesById(id: string) {
-    return this.moduleRepository.findOne({ where: { id } });
+  async getModulesById(id: string) {
+    const moduleExists = await this.moduleRepository.findOne({ where: { id } });
+    if (!moduleExists) {
+      throw new NotFoundException('Module not found');
+    }
+
+    return moduleExists;
   }
 
   async updateModule(id: string, UpdateModuleDto: UpdateModuleDto) {
-    const foundedModule = this.moduleRepository.findOne({where:{id}})
-    if(!foundedModule){
-      throw new BadRequestException("Module not found")
+    const foundedModule = await this.moduleRepository.findOne({
+      where: { id },
+    });
+    if (!foundedModule) {
+      throw new BadRequestException('Module not found');
     }
-    const {course_id, ...updateModule } = UpdateModuleDto
-    return this.moduleRepository.update(id, updateModule);
+    const { course_id, ...updateModule } = UpdateModuleDto;
+
+    const updatedModule = await this.moduleRepository.update(id, updateModule);
+
+    if (updatedModule.affected <= 0) {
+      throw new InternalServerErrorException('Module not updated');
+    }
+
+    return await this.moduleRepository.findOne({ where: { id } });
   }
 
   async removeModule(id: string) {
-    return this.moduleRepository.update(id, {
+    const moduleExists = await this.moduleRepository.findOne({ where: { id } });
+    if (!moduleExists) {
+      throw new NotFoundException('Module not found');
+    }
+
+    const deletedModule = await this.moduleRepository.update(id, {
       deleted_at: new Date(),
     });
+
+    if (deletedModule.affected <= 0) {
+      throw new InternalServerErrorException('Module not deleted');
+    }
+
+    return { message: 'Resource succesfully deleted' };
   }
 }
