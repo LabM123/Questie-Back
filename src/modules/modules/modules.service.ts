@@ -1,5 +1,4 @@
 import {
-  BadRequestException,
   Injectable,
   InternalServerErrorException,
   NotFoundException,
@@ -26,7 +25,7 @@ export class ModulesService {
     });
 
     if (!foundCourse) {
-      throw new BadRequestException('Course not found');
+      throw new NotFoundException('Course not found');
     }
 
     const newModule = new Module();
@@ -59,7 +58,7 @@ export class ModulesService {
       where: { id },
     });
     if (!foundedModule) {
-      throw new BadRequestException('Module not found');
+      throw new NotFoundException('Module not found');
     }
     const { course_id, ...updateModule } = UpdateModuleDto;
 

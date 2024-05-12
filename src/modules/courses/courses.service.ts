@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Course } from './entities/course.entity';
 import { Repository } from 'typeorm';
@@ -25,7 +25,7 @@ export class CoursesService {
       const foundedCourse = await this.coursesRepository.findOne({
         where: { id },
       });
-      if (!foundedCourse) throw new BadRequestException('Course not found');
+      if (!foundedCourse) throw new NotFoundException('Course not found');
       return foundedCourse;
     } catch (error: any) {
       throw new BadRequestException(error.message);
@@ -46,7 +46,7 @@ export class CoursesService {
       const foundedCourse = await this.coursesRepository.findOne({
         where: { id },
       });
-      if (!foundedCourse) throw new BadRequestException('Course not found');
+      if (!foundedCourse) throw new NotFoundException('Course not found');
       await this.coursesRepository.update(id, updateCourseDto);
       const updatedCourse = await this.coursesRepository.findOne({
         where: { id },
@@ -62,7 +62,7 @@ export class CoursesService {
       const foundedCourse = await this.coursesRepository.findOne({
         where: { id },
       });
-      if (!foundedCourse) throw new BadRequestException('Course not found');
+      if (!foundedCourse) throw new NotFoundException('Course not found');
       foundedCourse.deleted_at = new Date();
       await this.coursesRepository.update(id, foundedCourse);
       const deletedCourse = await this.coursesRepository.findOne({

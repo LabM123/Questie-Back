@@ -3,6 +3,7 @@ import {
   ForbiddenException,
   Inject,
   Injectable,
+  InternalServerErrorException,
   NotFoundException,
 } from '@nestjs/common';
 import { PaypalService } from './paypal/paypal.service';
@@ -36,7 +37,7 @@ export class PaymentsService {
     userId: string;
     productId: string;
   }) {
-    throw new Error('Method not implemented.');
+    throw new InternalServerErrorException('Method not implemented.');
   }
 
   async payWithPaypal({

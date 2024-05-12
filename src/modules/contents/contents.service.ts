@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { CreateContentDto } from './dto/create-content.dto';
 import { UpdateContentDto } from './dto/update-content.dto';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -25,7 +25,7 @@ export class ContentsService {
   async findOne(id: string) {
     try {
       const foundedContent = await this.contentsRepository.findOne({where:{id}});
-      if(!foundedContent) throw new BadRequestException('Content not found');
+      if(!foundedContent) throw new NotFoundException('Content not found');
       return foundedContent;
     } catch (error:any) {
       throw new BadRequestException(error.message)
@@ -35,7 +35,7 @@ export class ContentsService {
   async create(createContentDto: CreateContentDto) {
     try {
       const foundedLesson = await this.lessonssRepository.findOne({where:{id: createContentDto.lesson_id}});
-      if(!foundedLesson) throw new BadRequestException('Lesson not found');
+      if(!foundedLesson) throw new NotFoundException('Lesson not found');
       const newContent = await this.contentsRepository.save({type: createContentDto.type, content: createContentDto.content, lesson: foundedLesson});
       return newContent;
     } catch (error:any) {
@@ -46,7 +46,7 @@ export class ContentsService {
   async update(id: string, updateContentDto: UpdateContentDto) {
     try {
       const foundedContent = await this.contentsRepository.findOne({where:{id}});
-      if(!foundedContent) throw new BadRequestException('Content not found');
+      if(!foundedContent) throw new NotFoundException('Content not found');
       const savedContent = await this.contentsRepository.update(id, updateContentDto);
       return savedContent;
     } catch (error:any) {
@@ -57,7 +57,7 @@ export class ContentsService {
   async remove(id: string) {
     try {
       const foundedContent = await this.contentsRepository.findOne({where:{id}});
-      if(!foundedContent) throw new BadRequestException('Content not found');
+      if(!foundedContent) throw new NotFoundException('Content not found');
       foundedContent.deleted_at = new Date();
       const deletedContent = await this.contentsRepository.update(id, foundedContent);
       return deletedContent;
