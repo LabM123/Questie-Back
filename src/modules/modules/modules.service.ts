@@ -74,7 +74,6 @@ export class ModulesService {
   async updateModule(id: string, updateModuleDto: UpdateModuleDto) {
     const foundModule = await this.moduleRepository.findOne({
       where: { id },
-      loadRelationIds: true,
     });
 
     if (!foundModule) {
