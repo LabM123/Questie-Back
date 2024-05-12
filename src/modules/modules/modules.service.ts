@@ -76,8 +76,6 @@ export class ModulesService {
       where: { id },
       loadRelationIds: true,
     });
-    if (!foundedModule) {
-      throw new NotFoundException('Module not found');
 
     if (!foundModule) {
       throw new NotFoundException('Module not found');
