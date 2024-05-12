@@ -1,18 +1,10 @@
-import { ApiProperty } from "@nestjs/swagger";
-import {
-  IsNotEmpty,
-  IsOptional,
-  IsString,
-  MaxLength,
-  MinLength,
-} from "class-validator";
-import Module from "module";
-import { Category } from "src/modules/categories/entities/category.entity";
+import { ApiProperty } from '@nestjs/swagger';
+import { IsNotEmpty, IsString, MaxLength, MinLength } from 'class-validator';
 
 export class CreateCourseDto {
   @ApiProperty({
-    example: "Introduccion a la programacion con python",
-    description: "The title of the course that is being created",
+    example: 'Introduccion a la programacion con python',
+    description: 'The title of the course that is being created',
   })
   @IsNotEmpty()
   @IsString()
@@ -21,16 +13,19 @@ export class CreateCourseDto {
   title: string;
 
   @ApiProperty({
-    example: "Development",
-    description: "The category or tag of the course that is being created",
+    example: 'This course covers the basics of Python programming.',
+    description: 'The headline of the course that is being created',
   })
-  @IsOptional()
-  categories: Category[];
+  @IsNotEmpty()
+  @IsString()
+  @MaxLength(255)
+  headline: string;
 
   @ApiProperty({
-    example: "Variables",
-    description: "The course or courses that are going to be associated",
+    example: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
+    description: 'The description of the course that is being created',
   })
-  @IsOptional()
-  modules: Module[];
+  @IsNotEmpty()
+  @IsString()
+  description: string;
 }

@@ -9,6 +9,7 @@ import { Module } from './entities/module.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Course } from '../courses/entities/course.entity';
+import slugify from 'slugify';
 
 @Injectable()
 export class ModulesService {
@@ -28,13 +29,24 @@ export class ModulesService {
       throw new NotFoundException('Course not found');
     }
 
-    const newModule = new Module();
-    newModule.course = foundCourse;
-    newModule.title = createModuleDto.title;
+    const slug = `${slugify(createModuleDto.title, {
+      lower: true,
+      replacement: '-',
+      locale: 'en',
+    })}-${new Date().getTime()}`;
 
-    const savedModule = await this.moduleRepository.save(newModule);
+    const savedModule = await this.moduleRepository.save(
+      this.moduleRepository.create({
+        ...createModuleDto,
+        course: foundCourse,
+        slug,
+      }),
+    );
 
-    return savedModule;
+    return await this.moduleRepository.findOne({
+      where: { id: savedModule.id },
+      loadRelationIds: true,
+    });
   }
 
   async getAllModules(withDeleted: boolean = false) {
@@ -45,7 +57,10 @@ export class ModulesService {
   }
 
   async getModulesById(id: string) {
-    const moduleExists = await this.moduleRepository.findOne({ where: { id } });
+    const moduleExists = await this.moduleRepository.findOne({
+      where: { id },
+      loadRelationIds: true,
+    });
     if (!moduleExists) {
       throw new NotFoundException('Module not found');
     }
@@ -54,21 +69,41 @@ export class ModulesService {
   }
 
   async updateModule(id: string, UpdateModuleDto: UpdateModuleDto) {
-    const foundedModule = await this.moduleRepository.findOne({
+    const foundModule = await this.moduleRepository.findOne({
       where: { id },
+      loadRelationIds: true,
     });
     if (!foundedModule) {
       throw new NotFoundException('Module not found');
-    }
-    const { course_id, ...updateModule } = UpdateModuleDto;
 
-    const updatedModule = await this.moduleRepository.update(id, updateModule);
+    if (!foundModule) {
+      throw new NotFoundException('Module not found');
+    }
+
+    if (UpdateModuleDto.title) {
+      const slugTimestamp = foundModule.slug.split('-').pop();
+      const slug = `${slugify(UpdateModuleDto.title, {
+        lower: true,
+        replacement: '-',
+        locale: 'en',
+      })}-${slugTimestamp}`;
+
+      foundModule.slug = slug;
+    }
+
+    const updatedModule = await this.moduleRepository.update(id, {
+      ...foundModule,
+      ...UpdateModuleDto,
+    });
 
     if (updatedModule.affected <= 0) {
       throw new InternalServerErrorException('Module not updated');
     }
 
-    return await this.moduleRepository.findOne({ where: { id } });
+    return await this.moduleRepository.findOne({
+      where: { id },
+      loadRelationIds: true,
+    });
   }
 
   async removeModule(id: string) {
