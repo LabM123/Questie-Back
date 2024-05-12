@@ -1,10 +1,19 @@
 import { Course } from 'src/modules/courses/entities/course.entity';
-import { Entity, PrimaryGeneratedColumn, Column, ManyToMany, CreateDateColumn, UpdateDateColumn, DeleteDateColumn } from 'typeorm';
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  ManyToMany,
+  CreateDateColumn,
+  UpdateDateColumn,
+  DeleteDateColumn,
+} from 'typeorm';
+import { v4 as uuid } from 'uuid';
 
 @Entity({ name: 'categories' })
 export class Category {
   @PrimaryGeneratedColumn('uuid')
-  id: string;
+  id: string = uuid();
 
   @Column()
   name: string;
