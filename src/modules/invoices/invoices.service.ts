@@ -23,12 +23,12 @@ export class InvoicesService {
       const foundUser = await this.usersRepository.findOne({
         where: { id: userId },
       });
-      if (!foundUser) throw new BadRequestException('User not found');
+      if (!foundUser) throw new NotFoundException('User not found');
 
       const foundProduct = await this.productsRepository.findOne({
         where: { id: productId },
       });
-      if (!foundProduct) throw new BadRequestException('Product not found');
+      if (!foundProduct) throw new NotFoundException('Product not found');
 
       const newInvoice = {
         userId,
@@ -61,7 +61,7 @@ export class InvoicesService {
       const foundedInvoice = await this.invoicesRepository.findOne({
         where: { id },
       });
-      if (!foundedInvoice) throw new BadRequestException('Invoice not found');
+      if (!foundedInvoice) throw new NotFoundException('Invoice not found');
       return foundedInvoice;
     } catch (error: any) {
       throw new BadRequestException(error.message);
@@ -94,7 +94,7 @@ export class InvoicesService {
       const foundedInvoice = await this.invoicesRepository.findOne({
         where: { id },
       });
-      if (!foundedInvoice) throw new BadRequestException('Invoice not found');
+      if (!foundedInvoice) throw new NotFoundException('Invoice not found');
       foundedInvoice.status = 'Pending';
       await this.invoicesRepository.update(id, foundedInvoice);
       const updatedInvoice = await this.invoicesRepository.findOne({
@@ -111,7 +111,7 @@ export class InvoicesService {
       const foundedInvoice = await this.invoicesRepository.findOne({
         where: { id },
       });
-      if (!foundedInvoice) throw new BadRequestException('Invoice not found');
+      if (!foundedInvoice) throw new NotFoundException('Invoice not found');
       foundedInvoice.status = 'Cancelled';
       await this.invoicesRepository.update(id, foundedInvoice);
       const updatedInvoice = await this.invoicesRepository.findOne({
@@ -128,7 +128,7 @@ export class InvoicesService {
       const foundedInvoice = await this.invoicesRepository.findOne({
         where: { id },
       });
-      if (!foundedInvoice) throw new BadRequestException('Invoice not found');
+      if (!foundedInvoice) throw new NotFoundException('Invoice not found');
       await this.invoicesRepository.update(id, updateInvoiceDto);
       const updatedInvoice = await this.invoicesRepository.findOne({
         where: { id },
@@ -144,7 +144,7 @@ export class InvoicesService {
       const foundedInvoice = await this.invoicesRepository.findOne({
         where: { id },
       });
-      if (!foundedInvoice) throw new BadRequestException('Invoice not found');
+      if (!foundedInvoice) throw new NotFoundException('Invoice not found');
       foundedInvoice.deleted_at = new Date();
       await this.invoicesRepository.update(id, foundedInvoice);
       return { message: 'Deleted' };

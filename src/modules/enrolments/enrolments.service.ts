@@ -1,4 +1,5 @@
 import {
+  ConflictException,
   Injectable,
   InternalServerErrorException,
   NotFoundException,
@@ -42,7 +43,7 @@ export class EnrolmentsService {
       withDeleted: true,
     });
     if (enrolmentExists) {
-      throw new Error('User already enrolled in this course');
+      throw new ConflictException('User already enrolled in this course');
     }
 
     const newEnrolment = await this.enrolmentRepository.save(

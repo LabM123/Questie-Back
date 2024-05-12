@@ -7,13 +7,18 @@ import {
   Param,
   Delete,
   ParseUUIDPipe,
+  UseGuards,
   UseInterceptors,
   UploadedFiles,
 } from '@nestjs/common';
 import { CoursesService } from './courses.service';
 import { CreateCourseDto } from './dto/create-course.dto';
 import { UpdateCourseDto } from './dto/update-course.dto';
-import { ApiBody, ApiConsumes, ApiTags } from '@nestjs/swagger';
+import { Roles } from '../auth/decorators/roles.decorator';
+import { Role } from '../auth/decorators/roles.enum';
+import { AuthGuard } from '../auth/guard/auth.guard';
+import { RolesGuard } from '../auth/guard/roles.guard';
+import { ApiBody, ApiBearerAuth, ApiConsumes, ApiTags } from '@nestjs/swagger';
 import { FileFieldsInterceptor } from '@nestjs/platform-express';
 
 @ApiTags('Courses')
@@ -21,6 +26,7 @@ import { FileFieldsInterceptor } from '@nestjs/platform-express';
 export class CoursesController {
   constructor(private readonly coursesService: CoursesService) {}
 
+  @ApiBearerAuth()
   @UseInterceptors(
     FileFieldsInterceptor(
       [
@@ -44,6 +50,8 @@ export class CoursesController {
     ),
   )
   @Post()
+  @Roles(Role.admin)
+  @UseGuards(AuthGuard, RolesGuard)
   @ApiConsumes('multipart/form-data')
   @ApiBody({
     schema: {
@@ -79,7 +87,10 @@ export class CoursesController {
     return this.coursesService.getAllCourses();
   }
 
+  @ApiBearerAuth()
   @Get('/admin')
+  @Roles(Role.admin)
+  @UseGuards(AuthGuard, RolesGuard)
   findAllWithDeleted() {
     return this.coursesService.getAllCourses(true);
   }
@@ -89,6 +100,7 @@ export class CoursesController {
     return this.coursesService.getCourseById(id);
   }
 
+  @ApiBearerAuth()
   @UseInterceptors(
     FileFieldsInterceptor(
       [
@@ -112,6 +124,8 @@ export class CoursesController {
     ),
   )
   @Put(':id')
+  @Roles(Role.admin)
+  @UseGuards(AuthGuard, RolesGuard)
   @ApiConsumes('multipart/form-data')
   @ApiBody({
     schema: {
@@ -143,7 +157,10 @@ export class CoursesController {
     return this.coursesService.updateCourse(id, updateCourseDto, files);
   }
 
+  @ApiBearerAuth()
   @Delete(':id')
+  @Roles(Role.admin)
+  @UseGuards(AuthGuard, RolesGuard)
   remove(@Param('id', ParseUUIDPipe) id: string) {
     return this.coursesService.deleteCourse(id);
   }

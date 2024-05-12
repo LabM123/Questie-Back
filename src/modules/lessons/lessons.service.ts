@@ -102,7 +102,7 @@ export class LessonsService {
         where: { id: updateLessonDto.module_id },
       });
       if (!foundModule) {
-        throw new BadRequestException('Module not found');
+        throw new NotFoundException('Module not found');
       }
 
       delete updateLessonDto.module_id;
