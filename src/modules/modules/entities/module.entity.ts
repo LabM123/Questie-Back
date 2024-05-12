@@ -11,17 +11,21 @@ import {
   OneToMany,
   JoinColumn,
 } from 'typeorm';
+import { v4 as uuid } from 'uuid';
 
 @Entity()
 export class Module {
   @PrimaryGeneratedColumn('uuid')
-  id: string;
+  id: string = uuid();
 
   @Column()
   title: string;
 
+  @Column()
+  slug: string;
+
   @Column({ nullable: true, default: 'https://placehold.co/600x400' })
-  imgUrl: string;
+  image: string;
 
   @Column({ nullable: true, default: 'Absolutely amazing module' })
   description: string;
