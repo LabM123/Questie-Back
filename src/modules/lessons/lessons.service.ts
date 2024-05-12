@@ -126,7 +126,10 @@ export class LessonsService {
         throw new InternalServerErrorException('Lesson not updated');
       }
 
-      return await this.lessonsRepository.findOne({ where: { id } });
+      return await this.lessonsRepository.findOne({
+        where: { id },
+        loadRelationIds: true,
+      });
     }
   }
 
