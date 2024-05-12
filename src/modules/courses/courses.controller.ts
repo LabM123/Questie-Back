@@ -21,21 +21,6 @@ import { FileFieldsInterceptor } from '@nestjs/platform-express';
 export class CoursesController {
   constructor(private readonly coursesService: CoursesService) {}
 
-  @Get()
-  findAll() {
-    return this.coursesService.getAllCourses();
-  }
-
-  @Get('/admin')
-  findAllWithDeleted() {
-    return this.coursesService.getAllCourses(true);
-  }
-
-  @Get(':id')
-  findOne(@Param('id', ParseUUIDPipe) id: string) {
-    return this.coursesService.getCourseById(id);
-  }
-
   @UseInterceptors(
     FileFieldsInterceptor(
       [
@@ -68,6 +53,21 @@ export class CoursesController {
     @Body() createCourseDto: CreateCourseDto,
   ) {
     return this.coursesService.createCourse(createCourseDto, files);
+  }
+
+  @Get()
+  findAll() {
+    return this.coursesService.getAllCourses();
+  }
+
+  @Get('/admin')
+  findAllWithDeleted() {
+    return this.coursesService.getAllCourses(true);
+  }
+
+  @Get(':id')
+  findOne(@Param('id', ParseUUIDPipe) id: string) {
+    return this.coursesService.getCourseById(id);
   }
 
   @UseInterceptors(
