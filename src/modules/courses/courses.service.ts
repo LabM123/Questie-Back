@@ -95,8 +95,8 @@ export class CoursesService {
     id: string,
     updateCourseDto: UpdateCourseDto,
     files: {
-      courseImg: Express.Multer.File[];
-      courseBgImg: Express.Multer.File[];
+      courseImg?: Express.Multer.File[];
+      courseBgImg?: Express.Multer.File[];
     } | null,
   ) {
     try {
