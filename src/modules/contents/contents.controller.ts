@@ -13,7 +13,7 @@ import { CreateContentDto } from './dto/create-content.dto';
 import { UpdateContentDto } from './dto/update-content.dto';
 import { ApiTags } from '@nestjs/swagger';
 
-@ApiTags("Contents")
+@ApiTags('Contents')
 @Controller('contents')
 export class ContentsController {
   constructor(private readonly contentsService: ContentsService) {}
@@ -21,6 +21,11 @@ export class ContentsController {
   @Get()
   findAll() {
     return this.contentsService.findAll();
+  }
+
+  @Get()
+  findAllWithDeleted() {
+    return this.contentsService.findAll(true);
   }
 
   @Get(':id')
@@ -34,12 +39,14 @@ export class ContentsController {
   }
 
   @Put(':id')
-  update(@Param('id', ParseUUIDPipe) id: string, @Body() updateContentDto: UpdateContentDto) {
+  update(
+    @Param('id', ParseUUIDPipe) id: string,
+    @Body() updateContentDto: UpdateContentDto,
+  ) {
     return this.contentsService.update(id, updateContentDto);
   }
 
   @Delete(':id')
-
   remove(@Param('id', ParseUUIDPipe) id: string) {
     return this.contentsService.remove(id);
   }
