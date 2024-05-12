@@ -16,7 +16,7 @@ const config = {
   migrations: ['dist/migrations/*{.ts,.js}'],
   logging: true,
   synchronize: true,
-  dropSchema: true,
+  dropSchema: false,
   /*  migrationsRun: true, */ // Habilitar la ejecución automática de migraciones al iniciar la aplicación
 };
 
