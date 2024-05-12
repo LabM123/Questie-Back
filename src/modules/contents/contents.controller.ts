@@ -18,7 +18,7 @@ import { Role } from '../auth/decorators/roles.enum';
 import { AuthGuard } from '../auth/guard/auth.guard';
 import { RolesGuard } from '../auth/guard/roles.guard';
 
-@ApiTags("Contents")
+@ApiTags('Contents')
 @Controller('contents')
 export class ContentsController {
   constructor(private readonly contentsService: ContentsService) {}
@@ -32,6 +32,10 @@ export class ContentsController {
   }
   
   @ApiBearerAuth()
+  @Get()
+  findAllWithDeleted() {
+    return this.contentsService.findAll(true);
+  }
   @Get(':id')
   @Roles(Role.admin, Role.user)
   @UseGuards(AuthGuard, RolesGuard)
@@ -51,7 +55,10 @@ export class ContentsController {
   @Put(':id')
   @Roles(Role.admin)
   @UseGuards(AuthGuard, RolesGuard)
-  update(@Param('id', ParseUUIDPipe) id: string, @Body() updateContentDto: UpdateContentDto) {
+  update(
+    @Param('id', ParseUUIDPipe) id: string,
+    @Body() updateContentDto: UpdateContentDto,
+  ) {
     return this.contentsService.update(id, updateContentDto);
   }
   

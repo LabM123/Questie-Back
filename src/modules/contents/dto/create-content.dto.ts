@@ -1,15 +1,23 @@
-import { IsNotEmpty, IsString, IsUUID } from "class-validator"
+import { IsNotEmpty, IsString, IsUUID, IsEnum } from 'class-validator';
+
+enum ContentType {
+  Title = 'title',
+  Subtitle = 'subtitle',
+  Text = 'text',
+  Image = 'image',
+  Video = 'video',
+}
 
 export class CreateContentDto {
-    @IsNotEmpty()
-    @IsString()
-    type: string
-    
-    @IsNotEmpty()
-    content: any
-    
-    @IsNotEmpty()
-    @IsString()
-    @IsUUID()
-    lesson_id: string
+  @IsNotEmpty()
+  @IsEnum(ContentType)
+  type: ContentType;
+
+  @IsNotEmpty()
+  content: JSON;
+
+  @IsNotEmpty()
+  @IsString()
+  @IsUUID()
+  lesson_id: string;
 }

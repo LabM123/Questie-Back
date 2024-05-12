@@ -14,11 +14,11 @@ import {
 import { CoursesService } from './courses.service';
 import { CreateCourseDto } from './dto/create-course.dto';
 import { UpdateCourseDto } from './dto/update-course.dto';
-import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { Roles } from '../auth/decorators/roles.decorator';
 import { Role } from '../auth/decorators/roles.enum';
 import { AuthGuard } from '../auth/guard/auth.guard';
 import { RolesGuard } from '../auth/guard/roles.guard';
+import { ApiBody, ApiBearerAuth, ApiConsumes, ApiTags } from '@nestjs/swagger';
 import { FileFieldsInterceptor } from '@nestjs/platform-express';
 
 @ApiTags('Courses')
@@ -52,6 +52,25 @@ export class CoursesController {
   @Post()
   @Roles(Role.admin)
   @UseGuards(AuthGuard, RolesGuard)
+  @ApiConsumes('multipart/form-data')
+  @ApiBody({
+    schema: {
+      type: 'object',
+      properties: {
+        courseImg: {
+          type: 'string',
+          format: 'binary',
+        },
+        courseBgImg: {
+          type: 'string',
+          format: 'binary',
+        },
+        title: { type: 'string' },
+        headline: { type: 'string' },
+        description: { type: 'string' },
+      },
+    },
+  })
   create(
     @UploadedFiles()
     files: {
@@ -107,6 +126,25 @@ export class CoursesController {
   @Put(':id')
   @Roles(Role.admin)
   @UseGuards(AuthGuard, RolesGuard)
+  @ApiConsumes('multipart/form-data')
+  @ApiBody({
+    schema: {
+      type: 'object',
+      properties: {
+        courseImg: {
+          type: 'string',
+          format: 'binary',
+        },
+        courseBgImg: {
+          type: 'string',
+          format: 'binary',
+        },
+        title: { type: 'string' },
+        headline: { type: 'string' },
+        description: { type: 'string' },
+      },
+    },
+  })
   update(
     @UploadedFiles()
     files: {

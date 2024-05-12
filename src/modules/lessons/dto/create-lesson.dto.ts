@@ -1,6 +1,12 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsNotEmpty, IsNumber, IsString, IsUUID } from 'class-validator';
 export class CreateLessonDto {
+  @ApiProperty({
+    example: 'Lesson 1',
+    description: 'The title of the lesson',
+  })
+  title: string;
+
   @IsNotEmpty()
   @IsString()
   @IsUUID()

@@ -11,17 +11,27 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
+import { v4 as uuid } from 'uuid';
 
 @Entity()
 export class Lesson {
   @PrimaryGeneratedColumn('uuid')
-  id: string;
+  id: string = uuid();
+
+  @Column()
+  title: string;
 
   @Column()
   order: number;
 
   @Column({ default: 0 })
   xp: number;
+
+  @Column({ default: 0 })
+  coins: number;
+
+  @Column({ unique: true })
+  slug: string;
 
   @ManyToOne(() => Module)
   @JoinColumn({ name: 'module_id' })
