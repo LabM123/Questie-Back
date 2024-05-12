@@ -134,11 +134,10 @@ export class CoursesService {
         ...updateCourseDto,
       });
 
-      const updatedCourse = await this.coursesRepository.findOne({
+      return await this.coursesRepository.findOne({
         where: { id },
+        loadRelationIds: true,
       });
-
-      return updatedCourse;
     } catch (error: any) {
       throw new BadRequestException(error.message);
     }
