@@ -26,6 +26,7 @@ import { FileFieldsInterceptor } from '@nestjs/platform-express';
 export class CoursesController {
   constructor(private readonly coursesService: CoursesService) {}
 
+  @ApiBearerAuth()
   @UseInterceptors(
     FileFieldsInterceptor(
       [
@@ -49,6 +50,8 @@ export class CoursesController {
     ),
   )
   @Post()
+  @Roles(Role.admin)
+  @UseGuards(AuthGuard, RolesGuard)
   create(
     @UploadedFiles()
     files: {
@@ -72,12 +75,13 @@ export class CoursesController {
   findAllWithDeleted() {
     return this.coursesService.getAllCourses(true);
   }
-  
+
   @Get(':id')
   findOne(@Param('id', ParseUUIDPipe) id: string) {
     return this.coursesService.getCourseById(id);
   }
 
+  @ApiBearerAuth()
   @UseInterceptors(
     FileFieldsInterceptor(
       [
@@ -114,7 +118,7 @@ export class CoursesController {
   ) {
     return this.coursesService.updateCourse(id, updateCourseDto, files);
   }
-  
+
   @ApiBearerAuth()
   @Delete(':id')
   @Roles(Role.admin)

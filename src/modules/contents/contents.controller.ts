@@ -25,14 +25,16 @@ export class ContentsController {
 
   @ApiBearerAuth()
   @Get()
-  @UseGuards(AuthGuard)
+  @Roles(Role.admin, Role.user)
+  @UseGuards(AuthGuard, RolesGuard)
   findAll() {
     return this.contentsService.findAll();
   }
   
   @ApiBearerAuth()
   @Get(':id')
-  @UseGuards(AuthGuard)
+  @Roles(Role.admin, Role.user)
+  @UseGuards(AuthGuard, RolesGuard)
   findOne(@Param('id', ParseUUIDPipe) id: string) {
     return this.contentsService.findOne(id);
   }

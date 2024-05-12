@@ -31,25 +31,37 @@ export class InvoicesController {
   
   @ApiBearerAuth()
   @Get(':id')
-  @UseGuards(AuthGuard)
+  @Roles(Role.admin, Role.user)
+  @UseGuards(AuthGuard, RolesGuard)
   findOne(@Param('id', ParseUUIDPipe) id: string) {
     return this.invoicesService.getInvoiceById(id);
   }
 
+/*   @ApiBearerAuth()
   @Put('pending/:id')
+  @Roles(Role.admin, Role.user)
+  @UseGuards(AuthGuard, RolesGuard)
   updateToPending(@Param('id', ParseUUIDPipe) id: string) {
     return this.invoicesService.updateToPending(id);
   }
 
+  @ApiBearerAuth()
+  @Put('pending/:id')
+  @Roles(Role.admin, Role.user)
+  @UseGuards(AuthGuard, RolesGuard)
   @Put('cancelled/:id')
   updateToCancelled(@Param('id', ParseUUIDPipe) id: string) {
     return this.invoicesService.updateToCancelled(id);
   }
 
+  @ApiBearerAuth()
+  @Put('pending/:id')
+  @Roles(Role.admin, Role.user)
+  @UseGuards(AuthGuard, RolesGuard)
   @Put('completed/:id')
   updateToCompleted(@Param('id', ParseUUIDPipe) id: string) {
     return this.invoicesService.updateToCompleted(id);
-  }
+  } */
 
   @ApiBearerAuth()
   @Put(':id')

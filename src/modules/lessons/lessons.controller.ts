@@ -25,7 +25,8 @@ export class LessonsController {
 
   @ApiBearerAuth()
   @Get()
-  @UseGuards(AuthGuard)
+  @Roles(Role.admin, Role.user)
+  @UseGuards(AuthGuard, RolesGuard)
   findAll() {
     return this.lessonsService.getAllLessons();
   }

@@ -18,19 +18,19 @@ import { Role } from '../auth/decorators/roles.enum';
 import { AuthGuard } from '../auth/guard/auth.guard';
 import { RolesGuard } from '../auth/guard/roles.guard';
 
-@ApiTags("Enrolments")
+@ApiTags('Enrolments')
 @Controller('enrolments')
 export class EnrolmentsController {
   constructor(private readonly enrolmentsService: EnrolmentsService) {}
 
   @ApiBearerAuth()
-  @Roles(Role.admin)
+  @Roles(Role.admin, Role.user)
   @UseGuards(AuthGuard, RolesGuard)
   @Post()
   create(@Body() createEnrolmentDto: CreateEnrolmentDto) {
     return this.enrolmentsService.create(createEnrolmentDto);
   }
-  
+
   @ApiBearerAuth()
   @Get()
   @Roles(Role.admin)
@@ -38,7 +38,7 @@ export class EnrolmentsController {
   findAll() {
     return this.enrolmentsService.findAll();
   }
-  
+
   @ApiBearerAuth()
   @Get('/admin')
   @Roles(Role.admin)
@@ -46,27 +46,30 @@ export class EnrolmentsController {
   findAllWithDeleted() {
     return this.enrolmentsService.findAll(true);
   }
-  
+
   @ApiBearerAuth()
   @Get(':id')
-  @UseGuards(AuthGuard)
+  @Roles(Role.admin, Role.user)
+  @UseGuards(AuthGuard, RolesGuard)
   findOne(@Param('id', ParseUUIDPipe) id: string) {
     return this.enrolmentsService.findOne(id);
   }
-  
+
   @ApiBearerAuth()
   @Put(':id')
-  @UseGuards(AuthGuard)
+  @Roles(Role.admin, Role.user)
+  @UseGuards(AuthGuard, RolesGuard)
   update(
     @Param('id', ParseUUIDPipe) id: string,
     @Body() updateEnrolmentDto: UpdateEnrolmentDto,
   ) {
     return this.enrolmentsService.update(id, updateEnrolmentDto);
   }
-  
+
   @ApiBearerAuth()
   @Delete(':id')
-  @UseGuards(AuthGuard)
+  @Roles(Role.admin, Role.user)
+  @UseGuards(AuthGuard, RolesGuard)
   remove(@Param('id', ParseUUIDPipe) id: string) {
     return this.enrolmentsService.remove(id);
   }
