@@ -95,8 +95,8 @@ export class CoursesService {
     id: string,
     updateCourseDto: UpdateCourseDto,
     files: {
-      courseImg: Express.Multer.File[];
-      courseBgImg: Express.Multer.File[];
+      courseImg?: Express.Multer.File[];
+      courseBgImg?: Express.Multer.File[];
     } | null,
   ) {
     try {
@@ -134,11 +134,10 @@ export class CoursesService {
         ...updateCourseDto,
       });
 
-      const updatedCourse = await this.coursesRepository.findOne({
+      return await this.coursesRepository.findOne({
         where: { id },
+        loadRelationIds: true,
       });
-
-      return updatedCourse;
     } catch (error: any) {
       throw new BadRequestException(error.message);
     }

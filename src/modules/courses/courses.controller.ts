@@ -66,8 +66,8 @@ export class CoursesController {
   create(
     @UploadedFiles()
     files: {
-      courseImg?: Express.Multer.File[];
-      courseBgImg?: Express.Multer.File[];
+      courseImg: Express.Multer.File[];
+      courseBgImg: Express.Multer.File[];
     },
     @Body() createCourseDto: CreateCourseDto,
   ) {
@@ -134,8 +134,8 @@ export class CoursesController {
   update(
     @UploadedFiles()
     files: {
-      courseImg: Express.Multer.File[];
-      courseBgImg: Express.Multer.File[];
+      courseImg?: Express.Multer.File[];
+      courseBgImg?: Express.Multer.File[];
     } = null,
     @Param('id', ParseUUIDPipe) id: string,
     @Body() updateCourseDto: UpdateCourseDto,
