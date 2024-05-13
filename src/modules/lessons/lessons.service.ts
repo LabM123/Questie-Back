@@ -21,8 +21,19 @@ export class LessonsService {
 
   async getAllLessons(withDeleted: boolean = false) {
     return await this.lessonsRepository.find({
-      loadRelationIds: true,
       withDeleted,
+      select: {
+        module: {
+          id: true,
+          course: {
+            id: true,
+          },
+        },
+        contents: {
+          id: true,
+        },
+      },
+      relations: ['module', 'module.course', 'contents'],
     });
   }
 
@@ -36,8 +47,9 @@ export class LessonsService {
             id: true,
           },
         },
+        contents: true,
       },
-      relations: ['module', 'module.course'],
+      relations: ['module', 'module.course', 'contents'],
     });
     if (!lesson) {
       throw new NotFoundException('Lesson not found');
