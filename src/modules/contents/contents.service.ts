@@ -79,7 +79,6 @@ export class ContentsService {
         id,
         updateContentDto,
       );
-
       return savedContent;
     } catch (error: any) {
       throw new BadRequestException(error.message);
