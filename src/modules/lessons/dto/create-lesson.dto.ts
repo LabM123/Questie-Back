@@ -5,6 +5,7 @@ export class CreateLessonDto {
     example: 'Lesson 1',
     description: 'The title of the lesson',
   })
+  @IsNotEmpty()
   title: string;
 
   @IsNotEmpty()

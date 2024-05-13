@@ -20,10 +20,22 @@ export class CoursesService {
 
   async getAllCourses(withDeleted: boolean = false) {
     try {
+      //Select only title, id and lessons of each module
       const allCourses = await this.coursesRepository.find({
         withDeleted,
-        loadRelationIds: true,
+        select: {
+          modules: {
+            id: true,
+            title: true,
+            lessons: {
+              id: true,
+              title: true,
+            },
+          },
+        },
+        relations: ['modules', 'modules.lessons'],
       });
+
       return allCourses;
     } catch (error: any) {
       throw new BadRequestException(error.message);
@@ -34,7 +46,17 @@ export class CoursesService {
     try {
       const foundedCourse = await this.coursesRepository.findOne({
         where: { id },
-        loadRelationIds: true,
+        select: {
+          modules: {
+            id: true,
+            title: true,
+            lessons: {
+              id: true,
+              title: true,
+            },
+          },
+        },
+        relations: ['modules', 'modules.lessons'],
       });
       if (!foundedCourse) throw new NotFoundException('Course not found');
       return foundedCourse;
@@ -134,11 +156,10 @@ export class CoursesService {
         ...updateCourseDto,
       });
 
-      const updatedCourse = await this.coursesRepository.findOne({
+      return await this.coursesRepository.findOne({
         where: { id },
+        loadRelationIds: true,
       });
-
-      return updatedCourse;
     } catch (error: any) {
       throw new BadRequestException(error.message);
     }
