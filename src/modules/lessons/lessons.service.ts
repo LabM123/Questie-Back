@@ -56,6 +56,8 @@ export class LessonsService {
         throw new ConflictException('Lesson order already exists');
       }
 
+      console.log(createLessonDto.title);
+
       const slug = `${slugify(createLessonDto.title, {
         lower: true,
         replacement: '-',
@@ -75,8 +77,8 @@ export class LessonsService {
         where: { id: newLesson.id },
         loadRelationIds: true,
       });
-    } catch (error) {
-      throw new InternalServerErrorException(error);
+    } catch (error: any) {
+      throw new InternalServerErrorException(error.message);
     }
   }
 
