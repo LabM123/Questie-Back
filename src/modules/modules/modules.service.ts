@@ -73,8 +73,11 @@ export class ModulesService {
           id: true,
           title: true,
         },
+        course: {
+          id: true,
+        },
       },
-      relations: ['lessons'],
+      relations: ['lessons', 'course'],
     });
     if (!moduleExists) {
       throw new NotFoundException('Module not found');

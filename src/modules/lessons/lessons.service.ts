@@ -29,7 +29,15 @@ export class LessonsService {
   async getLessonById(id: string) {
     const lesson = await this.lessonsRepository.findOne({
       where: { id },
-      loadRelationIds: true,
+      select: {
+        module: {
+          id: true,
+          course: {
+            id: true,
+          },
+        },
+      },
+      relations: ['module', 'module.course'],
     });
     if (!lesson) {
       throw new NotFoundException('Lesson not found');
@@ -54,8 +62,6 @@ export class LessonsService {
       if (orderExists) {
         throw new ConflictException('Lesson order already exists');
       }
-
-      console.log(createLessonDto.title);
 
       const slug = `${slugify(createLessonDto.title, {
         lower: true,
