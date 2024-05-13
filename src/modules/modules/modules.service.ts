@@ -55,14 +55,26 @@ export class ModulesService {
   async getAllModules(withDeleted: boolean = false) {
     return await this.moduleRepository.find({
       withDeleted,
-      loadRelationIds: true,
+      select: {
+        lessons: {
+          id: true,
+          title: true,
+        },
+      },
+      relations: ['lessons'],
     });
   }
 
   async getModulesById(id: string) {
     const moduleExists = await this.moduleRepository.findOne({
       where: { id },
-      loadRelationIds: true,
+      select: {
+        lessons: {
+          id: true,
+          title: true,
+        },
+      },
+      relations: ['lessons'],
     });
     if (!moduleExists) {
       throw new NotFoundException('Module not found');
