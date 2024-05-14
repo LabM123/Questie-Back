@@ -1,9 +1,9 @@
 import {
+  BadRequestException,
   ConflictException,
   ForbiddenException,
   Inject,
   Injectable,
-  InternalServerErrorException,
   NotFoundException,
 } from '@nestjs/common';
 import { PaypalService } from './paypal/paypal.service';
@@ -14,6 +14,9 @@ import { User } from '../users/entities/user.entity';
 import { Course } from '../courses/entities/course.entity';
 import { Enrolment } from '../enrolments/entities/enrolment.entity';
 import { InvoicesService } from '../invoices/invoices.service';
+import { Request } from 'express';
+import { Preference } from 'mercadopago';
+import { client } from 'src/config/mercadopago';
 
 @Injectable()
 export class PaymentsService {
@@ -30,14 +33,31 @@ export class PaymentsService {
     private readonly invoicesService: InvoicesService,
   ) {}
 
-  async payWithMercadoPago({
-    userId,
-    productId,
-  }: {
-    userId: string;
-    productId: string;
-  }) {
-    throw new InternalServerErrorException('Method not implemented.');
+  async payWithMercadoPago(request: Request){
+    try {
+      const body = {
+        items: [
+          {
+            id: request.body.product_id,
+            title: request.body.title,
+            quantity: Number(request.body.quantity),
+            unit_price: Number(request.body.unit_price),
+            currency_id: 'ARS'
+          }
+        ],
+        back_urls: {
+          success: process.env.MERCADOPAGO_SUCCESS_URI,
+          failure: process.env.MERCADOPAGO_FAILURE_URI,
+          pending: process.env.MERCADOPAGO_PENDING_URI
+        },
+        auto_return: 'approved'
+      }
+      const preference = new Preference(client);
+      const result = await preference.create({body})
+      return {id: result.id}
+    } catch (error:any) {
+      throw new BadRequestException(error.message)
+    }
   }
 
   async payWithPaypal({
