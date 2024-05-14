@@ -1,10 +1,10 @@
 import {
   Body,
   Controller,
-  Get,
-  ParseUUIDPipe,
+  // Get,
+  // ParseUUIDPipe,
   Post,
-  Query,
+  // Query,
   UseGuards,
 } from '@nestjs/common';
 import { PaymentsService } from './payments.service';
@@ -30,16 +30,16 @@ export class PaymentsController {
     return approvalUrl;
   }
 
-  @ApiBearerAuth()
-  @Get('/paypal/success')
-  @Roles(Role.admin, Role.user)
-  @UseGuards(AuthGuard, RolesGuard)
-  async paypalSuccess(
-    @Query('paymentId', ParseUUIDPipe) paymentId: string,
-    @Query('PayerID', ParseUUIDPipe) PayerID: string,
-  ) {
-    return { paymentId, PayerID };
-  }
+  // @ApiBearerAuth()
+  // @Get('/paypal/success')
+  // @Roles(Role.admin, Role.user)
+  // @UseGuards(AuthGuard, RolesGuard)
+  // async paypalSuccess(
+  //   @Query('paymentId', ParseUUIDPipe) paymentId: string,
+  //   @Query('PayerID', ParseUUIDPipe) PayerID: string,
+  // ) {
+  //   return { paymentId, PayerID };
+  // }
 
   @ApiBearerAuth()
   @Post('/mercado-pago')
@@ -58,11 +58,11 @@ export class PaymentsController {
     return invoiceId;
   }
 
-  @ApiBearerAuth()
-  @Get('/success')
-  @Roles(Role.admin, Role.user)
-  @UseGuards(AuthGuard, RolesGuard)
-  async success(@Query('invoiceId', ParseUUIDPipe) invoiceId: string) {
-    return await this.paymentsService.success(invoiceId);
-  }
+  // @ApiBearerAuth()
+  // @Get('/success')
+  // @Roles(Role.admin, Role.user)
+  // @UseGuards(AuthGuard, RolesGuard)
+  // async success(@Query('invoiceId', ParseUUIDPipe) invoiceId: string) {
+  //   return await this.paymentsService.success(invoiceId);
+  // }
 }
