@@ -5,7 +5,6 @@ import {
   ParseUUIDPipe,
   Post,
   Query,
-  Redirect,
   UseGuards,
 } from '@nestjs/common';
 import { PaymentsService } from './payments.service';
@@ -25,11 +24,10 @@ export class PaymentsController {
   @Post('/paypal')
   @Roles(Role.admin, Role.user)
   @UseGuards(AuthGuard, RolesGuard)
-  @Redirect()
   async payWithPaypal(@Body() createPaymentDto: CreatePaymentDto) {
     const approvalUrl =
       await this.paymentsService.payWithPaypal(createPaymentDto);
-    return { url: approvalUrl };
+    return approvalUrl;
   }
 
   @ApiBearerAuth()
@@ -55,19 +53,16 @@ export class PaymentsController {
   @Post('/coins')
   @Roles(Role.admin, Role.user)
   @UseGuards(AuthGuard, RolesGuard)
-  @Redirect('http://localhost:3000/payments/success', 302)
   async payWithCoins(@Body() createPaymentDto: CreatePaymentDto) {
     const invoiceId = await this.paymentsService.payWithCoins(createPaymentDto);
-    return { invoiceId };
+    return invoiceId;
   }
 
   @ApiBearerAuth()
   @Get('/success')
   @Roles(Role.admin, Role.user)
   @UseGuards(AuthGuard, RolesGuard)
-  @Redirect()
   async success(@Query('invoiceId', ParseUUIDPipe) invoiceId: string) {
-    const paidInvoiceId = await this.paymentsService.success(invoiceId);
-    return { url: `http://localhost:3000/invoices/${paidInvoiceId}` };
+    return await this.paymentsService.success(invoiceId);
   }
 }
