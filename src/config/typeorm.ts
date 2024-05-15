@@ -15,9 +15,9 @@ const config = {
   entities: ['dist/**/*.entity{.ts,.js}'],
   migrations: ['dist/migrations/*{.ts,.js}'],
   logging: true,
-  synchronize: false,
+  synchronize: true,
   dropSchema: false,
-  migrationsRun: true, // Habilitar la ejecución automática de migraciones al iniciar la aplicación
+  // migrationsRun: true, // Habilitar la ejecución automática de migraciones al iniciar la aplicación
 };
 
 export default registerAs('typeorm', () => config);
