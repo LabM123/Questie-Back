@@ -32,8 +32,12 @@ export class CoursesService {
               title: true,
             },
           },
+          categories: {
+            id: true,
+            name: true,
+          },
         },
-        relations: ['modules', 'modules.lessons'],
+        relations: ['modules', 'modules.lessons', 'categories'],
       });
 
       return allCourses;
@@ -55,8 +59,12 @@ export class CoursesService {
               title: true,
             },
           },
+          categories: {
+            id: true,
+            name: true,
+          },
         },
-        relations: ['modules', 'modules.lessons'],
+        relations: ['modules', 'modules.lessons', 'categories'],
       });
       if (!foundedCourse) throw new NotFoundException('Course not found');
       return foundedCourse;
