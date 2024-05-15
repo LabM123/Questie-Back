@@ -7,16 +7,21 @@ import {
   CreateDateColumn,
   UpdateDateColumn,
   DeleteDateColumn,
+  Unique,
 } from 'typeorm';
 import { v4 as uuid } from 'uuid';
 
 @Entity({ name: 'categories' })
+@Unique(['name'])
 export class Category {
   @PrimaryGeneratedColumn('uuid')
   id: string = uuid();
 
   @Column()
   name: string;
+
+  @Column({ default: 'programacion' })
+  slug: string;
 
   @ManyToMany(() => Course, (course) => course.categories)
   courses: Course[];

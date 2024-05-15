@@ -17,7 +17,7 @@ const config = {
   logging: true,
   synchronize: false,
   dropSchema: false,
-  /*  migrationsRun: true, */ // Habilitar la ejecución automática de migraciones al iniciar la aplicación
+  migrationsRun: true, // Habilitar la ejecución automática de migraciones al iniciar la aplicación
 };
 
 export default registerAs('typeorm', () => config);
