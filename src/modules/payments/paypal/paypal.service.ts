@@ -32,8 +32,8 @@ export class PaypalService {
         payment_method: 'paypal',
       },
       redirect_urls: {
-        return_url: 'http://localhost:3000/payments/paypal/success',
-        cancel_url: 'http://localhost:3000/payments/paypal/cancel',
+        return_url: `${process.env.APP_URL}/shop/payments/paypal/success`,
+        cancel_url: `${process.env.APP_URL}/shop/payments/paypal/cancel`,
       },
       transactions: [
         {
