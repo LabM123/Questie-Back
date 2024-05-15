@@ -4,7 +4,8 @@ import {
   // Get,
   // ParseUUIDPipe,
   Post,
-  // Query,
+  Query,
+  Req,
   UseGuards,
 } from '@nestjs/common';
 import { PaymentsService } from './payments.service';
@@ -14,6 +15,7 @@ import { Roles } from '../auth/decorators/roles.decorator';
 import { Role } from '../auth/decorators/roles.enum';
 import { AuthGuard } from '../auth/guard/auth.guard';
 import { RolesGuard } from '../auth/guard/roles.guard';
+import { Request } from 'express';
 
 @ApiTags('Payments')
 @Controller('payments')
@@ -45,8 +47,8 @@ export class PaymentsController {
   @Post('/mercado-pago')
   @Roles(Role.admin, Role.user)
   @UseGuards(AuthGuard, RolesGuard)
-  async payWithMercadoPago(@Body() createPaymentDto: CreatePaymentDto) {
-    return this.paymentsService.payWithMercadoPago(createPaymentDto);
+  async payWithMercadoPago(@Req() request: Request) {
+    return this.paymentsService.payWithMercadoPago(request);
   }
 
   @ApiBearerAuth()
