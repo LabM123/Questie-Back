@@ -1,4 +1,10 @@
-import { BadRequestException, ConflictException, Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  ConflictException,
+  Injectable,
+  InternalServerErrorException,
+  NotFoundException,
+} from '@nestjs/common';
 import { Repository } from 'typeorm';
 import { User } from '../users/entities/user.entity';
 import * as bcrypt from 'bcrypt';
@@ -43,10 +49,13 @@ export class AuthService {
         where: { email: user.email },
       });
       if (foundedUser) throw new ConflictException('Try another email');
-      if (user.password !== user.confirmPassword) throw new BadRequestException("Both passwords must be the same.")
+      if (user.password !== user.confirmPassword)
+        throw new BadRequestException('Both passwords must be the same.');
       const hashedPassword = await bcrypt.hash(user.password, 10);
       if (!hashedPassword)
-        throw new InternalServerErrorException('Couldnt hash the password');
+        throw new InternalServerErrorException(
+          'Password could not be encrypted',
+        );
       const newUser = await this.usersRepository.save({
         ...user,
         password: hashedPassword,

@@ -2,15 +2,25 @@ import {
   Controller,
   Get,
   Post,
-  Body,
   Put,
-  Param,
   Delete,
+  Param,
+  Body,
+  UploadedFiles,
+  UseInterceptors,
   ParseUUIDPipe,
   UseGuards,
-  UseInterceptors,
-  UploadedFiles,
 } from '@nestjs/common';
+import {
+  ApiBearerAuth,
+  ApiBody,
+  ApiConsumes,
+  ApiOperation,
+  ApiParam,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger';
+import { FileFieldsInterceptor } from '@nestjs/platform-express';
 import { CoursesService } from './courses.service';
 import { CreateCourseDto } from './dto/create-course.dto';
 import { UpdateCourseDto } from './dto/update-course.dto';
@@ -18,8 +28,6 @@ import { Roles } from '../auth/decorators/roles.decorator';
 import { Role } from '../auth/decorators/roles.enum';
 import { AuthGuard } from '../auth/guard/auth.guard';
 import { RolesGuard } from '../auth/guard/roles.guard';
-import { ApiBody, ApiBearerAuth, ApiConsumes, ApiTags } from '@nestjs/swagger';
-import { FileFieldsInterceptor } from '@nestjs/platform-express';
 
 @ApiTags('Courses')
 @Controller('courses')
@@ -71,7 +79,16 @@ export class CoursesController {
       },
     },
   })
-  create(
+  @ApiOperation({
+    summary: 'Create Course',
+    description: 'Create a new course.',
+  })
+  @ApiResponse({
+    status: 201,
+    description: 'The course has been successfully created.',
+  })
+  @ApiResponse({ status: 400, description: 'Bad request.' })
+  async create(
     @UploadedFiles()
     files: {
       courseImg: Express.Multer.File[];
@@ -83,7 +100,12 @@ export class CoursesController {
   }
 
   @Get()
-  findAll() {
+  @ApiOperation({
+    summary: 'Get All Courses',
+    description: 'Retrieve all courses.',
+  })
+  @ApiResponse({ status: 200, description: 'Returns all courses.' })
+  async findAll() {
     return this.coursesService.getAllCourses();
   }
 
@@ -91,12 +113,31 @@ export class CoursesController {
   @Get('/admin')
   @Roles(Role.admin)
   @UseGuards(AuthGuard, RolesGuard)
-  findAllWithDeleted() {
+  @ApiOperation({
+    summary: 'Get All Courses (Admin)',
+    description: 'Retrieve all courses, including deleted ones.',
+  })
+  @ApiResponse({
+    status: 401,
+    description: 'Unauthorized',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Returns all courses including deleted ones.',
+  })
+  async findAllWithDeleted() {
     return this.coursesService.getAllCourses(true);
   }
 
   @Get(':id')
-  findOne(@Param('id', ParseUUIDPipe) id: string) {
+  @ApiOperation({
+    summary: 'Get Course by ID',
+    description: 'Retrieve a course by its ID.',
+  })
+  @ApiParam({ name: 'id', description: 'Course ID', type: 'string' })
+  @ApiResponse({ status: 200, description: 'Returns the course.' })
+  @ApiResponse({ status: 404, description: 'Course not found.' })
+  async findOne(@Param('id', ParseUUIDPipe) id: string) {
     return this.coursesService.getCourseById(id);
   }
 
@@ -145,7 +186,17 @@ export class CoursesController {
       },
     },
   })
-  update(
+  @ApiOperation({
+    summary: 'Update Course',
+    description: 'Update an existing course by its ID.',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'The course has been successfully updated.',
+  })
+  @ApiResponse({ status: 400, description: 'Bad request.' })
+  @ApiResponse({ status: 404, description: 'Course not found.' })
+  async update(
     @UploadedFiles()
     files: {
       courseImg?: Express.Multer.File[];
@@ -161,7 +212,16 @@ export class CoursesController {
   @Delete(':id')
   @Roles(Role.admin)
   @UseGuards(AuthGuard, RolesGuard)
-  remove(@Param('id', ParseUUIDPipe) id: string) {
+  @ApiOperation({
+    summary: 'Delete Course',
+    description: 'Delete a course by its ID.',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'The course has been successfully deleted.',
+  })
+  @ApiResponse({ status: 404, description: 'Course not found.' })
+  async remove(@Param('id', ParseUUIDPipe) id: string) {
     return this.coursesService.deleteCourse(id);
   }
 }
