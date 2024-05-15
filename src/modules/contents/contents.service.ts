@@ -23,7 +23,8 @@ export class ContentsService {
         withDeleted,
         loadRelationIds: true,
       });
-
+      if (contents.length === 0)
+        throw new NotFoundException('There are no categories to display');
       return contents;
     } catch (error: any) {
       throw new BadRequestException(error.message);

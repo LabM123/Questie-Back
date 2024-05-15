@@ -26,7 +26,7 @@
     "migration:show": "npm run typeorm migration:show -- -d ./src/config/typeorm.ts migration:show"
   },
   "dependencies": {
-    "@nestjs/common": "^10.0.0",
+    "@nestjs/common": "^10.3.8",
     "@nestjs/config": "^3.2.2",
     "@nestjs/core": "^10.0.0",
     "@nestjs/jwt": "^10.2.0",
