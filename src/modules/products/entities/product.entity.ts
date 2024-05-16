@@ -31,6 +31,12 @@ export class Product {
   @Column()
   currency: string;
 
+  @Column({ default: 'https://placehold.co/600x400.png' })
+  imgUrl: string;
+
+  @Column({ nullable: true })
+  order: number;
+
   @Column({ enum: PolymorphicEntityType, nullable: true })
   polymorphicEntityType: string;
 
