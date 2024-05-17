@@ -11,11 +11,12 @@ import {
   DeleteDateColumn,
   UpdateDateColumn,
 } from 'typeorm';
+import { v4 as uuid } from 'uuid';
 
 @Entity()
 export class Invoice {
   @PrimaryGeneratedColumn('uuid')
-  id: string;
+  id: string = uuid();
 
   @Column({ type: 'decimal', precision: 10, scale: 2 })
   total: number;
