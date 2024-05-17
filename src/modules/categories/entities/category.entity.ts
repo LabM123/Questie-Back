@@ -23,6 +23,9 @@ export class Category {
   @Column({ default: 'programacion' })
   slug: string;
 
+  @Column({ default: 'https://placehold.co/600x400.png' })
+  image: string;
+
   @ManyToMany(() => Course, (course) => course.categories)
   courses: Course[];
 
