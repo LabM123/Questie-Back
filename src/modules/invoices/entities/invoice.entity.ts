@@ -5,7 +5,6 @@ import {
   PrimaryGeneratedColumn,
   Column,
   ManyToOne,
-  OneToOne,
   JoinColumn,
   CreateDateColumn,
   DeleteDateColumn,
@@ -24,7 +23,7 @@ export class Invoice {
   @Column()
   status: string;
 
-  @OneToOne(() => Product)
+  @ManyToOne(() => Product)
   @JoinColumn({ name: 'product_id' })
   product: Product;
 
