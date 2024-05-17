@@ -34,16 +34,14 @@ export class InvoicesService {
       });
       if (!foundProduct) throw new NotFoundException('Product not found');
 
-      const newInvoice = {
-        userId,
-        productId,
-        status: 'Pending',
-        product: foundProduct,
-        user: foundUser,
-        total: foundProduct.price,
-      };
-
-      const savedInvoice = await this.invoicesRepository.save(newInvoice);
+      const savedInvoice = await this.invoicesRepository.save(
+        this.invoicesRepository.create({
+          status: 'Pending',
+          product: foundProduct,
+          user: foundUser,
+          total: foundProduct.price,
+        }),
+      );
 
       return savedInvoice.id;
     } catch (error: any) {
