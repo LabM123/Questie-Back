@@ -9,6 +9,7 @@ import { Repository } from 'typeorm';
 import { UpdateInvoiceDto } from './dto/update-invoice.dto';
 import { Product } from '../products/entities/product.entity';
 import { User } from '../users/entities/user.entity';
+import { CreateInvoiceDto } from './dto/create-invoice.dto';
 
 @Injectable()
 export class InvoicesService {
@@ -18,7 +19,10 @@ export class InvoicesService {
     @InjectRepository(User) private usersRepository: Repository<User>,
   ) {}
 
-  async createInvoice(userId: string, productId: string): Promise<string> {
+  async createInvoice({
+    userId,
+    productId,
+  }: CreateInvoiceDto): Promise<string> {
     try {
       const foundUser = await this.usersRepository.findOne({
         where: { id: userId },
@@ -50,6 +54,7 @@ export class InvoicesService {
   async getAllInvoices() {
     try {
       const allInvoices = await this.invoicesRepository.find();
+
       return allInvoices;
     } catch (error: any) {
       throw new BadRequestException(error.message);
