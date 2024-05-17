@@ -49,9 +49,24 @@ export class InvoicesService {
     }
   }
 
-  async getAllInvoices() {
+  async getAllInvoices(withDeleted: boolean = false) {
     try {
-      const allInvoices = await this.invoicesRepository.find();
+      const allInvoices = await this.invoicesRepository.find({
+        select: {
+          id: true,
+          status: true,
+          total: true,
+          created_at: true,
+          product: {
+            name: true,
+          },
+          user: {
+            id: true,
+          },
+        },
+        relations: ['product', 'user'],
+        withDeleted,
+      });
 
       return allInvoices;
     } catch (error: any) {
@@ -63,6 +78,19 @@ export class InvoicesService {
     try {
       const foundedInvoice = await this.invoicesRepository.findOne({
         where: { id },
+        select: {
+          id: true,
+          status: true,
+          total: true,
+          created_at: true,
+          product: {
+            name: true,
+          },
+          user: {
+            id: true,
+          },
+        },
+        relations: ['product', 'user'],
       });
       if (!foundedInvoice) throw new NotFoundException('Invoice not found');
       return foundedInvoice;
