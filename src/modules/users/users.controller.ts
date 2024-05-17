@@ -49,7 +49,7 @@ export class UsersController {
   
   @ApiBearerAuth()
   @Get(':id')
-  @Roles(Role.admin)
+  @Roles(Role.admin, Role.user)
   @UseGuards(AuthGuard, RolesGuard)
   findOne(@Param('id', ParseUUIDPipe) id: string) {
     return this.usersService.findOne(id);
