@@ -134,10 +134,26 @@ export class InvoicesService {
         where: { id },
       });
       if (!foundedInvoice) throw new NotFoundException('Invoice not found');
-      await this.invoicesRepository.update(id, updateInvoiceDto);
+
+      const user = await this.usersRepository.findOne({
+        where: { id: updateInvoiceDto.userId },
+      });
+      if (!user) throw new NotFoundException('User not found');
+
+      const product = await this.productsRepository.findOne({
+        where: { id: updateInvoiceDto.productId },
+      });
+      if (!product) throw new NotFoundException('Product not found');
+
+      await this.invoicesRepository.update(id, {
+        user,
+        product,
+      });
+
       const updatedInvoice = await this.invoicesRepository.findOne({
         where: { id },
       });
+
       return updatedInvoice;
     } catch (error: any) {
       throw new BadRequestException(error.message);

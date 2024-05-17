@@ -17,9 +17,6 @@ export class Invoice {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @Column({ name: 'user_id' })
-  userId: string;
-
   @Column({ type: 'decimal', precision: 10, scale: 2 })
   total: number;
 
