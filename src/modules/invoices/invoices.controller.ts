@@ -7,6 +7,7 @@ import {
   Delete,
   ParseUUIDPipe,
   UseGuards,
+  Post,
 } from '@nestjs/common';
 import { InvoicesService } from './invoices.service';
 import { UpdateInvoiceDto } from './dto/update-invoice.dto';
@@ -15,20 +16,21 @@ import { Roles } from '../auth/decorators/roles.decorator';
 import { Role } from '../auth/decorators/roles.enum';
 import { AuthGuard } from '../auth/guard/auth.guard';
 import { RolesGuard } from '../auth/guard/roles.guard';
+import { CreateInvoiceDto } from './dto/create-invoice.dto';
 
-@ApiTags("Invoices")
+@ApiTags('Invoices')
 @Controller('invoices')
 export class InvoicesController {
   constructor(private readonly invoicesService: InvoicesService) {}
 
   @ApiBearerAuth()
   @Get()
-  @Roles(Role.admin)
+  @Roles(Role.admin, Role.user)
   @UseGuards(AuthGuard, RolesGuard)
   findAll() {
     return this.invoicesService.getAllInvoices();
   }
-  
+
   @ApiBearerAuth()
   @Get(':id')
   @Roles(Role.admin, Role.user)
@@ -37,7 +39,15 @@ export class InvoicesController {
     return this.invoicesService.getInvoiceById(id);
   }
 
-/*   @ApiBearerAuth()
+  @ApiBearerAuth()
+  @Post()
+  @Roles(Role.admin, Role.user)
+  @UseGuards(AuthGuard, RolesGuard)
+  create(@Body() createInvoiceDto: CreateInvoiceDto) {
+    return this.invoicesService.createInvoice(createInvoiceDto);
+  }
+
+  /*   @ApiBearerAuth()
   @Put('pending/:id')
   @Roles(Role.admin, Role.user)
   @UseGuards(AuthGuard, RolesGuard)
@@ -73,7 +83,7 @@ export class InvoicesController {
   ) {
     return this.invoicesService.updateInvoice(id, updateInvoiceDto);
   }
-  
+
   @ApiBearerAuth()
   @Delete(':id')
   @Roles(Role.admin)

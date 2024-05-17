@@ -1,11 +1,11 @@
-import { IsNotEmpty, IsString } from "class-validator"
+import { IsNotEmpty, IsString } from 'class-validator';
 
 export class CreateInvoiceDto {
-    @IsNotEmpty()
-    @IsString()
-    user_id: string
-    
-    @IsNotEmpty()
-    @IsString()
-    product_id: string
+  @IsNotEmpty()
+  @IsString()
+  userId: string;
+
+  @IsNotEmpty()
+  @IsString()
+  productId: string;
 }
