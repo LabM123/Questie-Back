@@ -120,7 +120,7 @@ export class PaymentsService {
       }),
     );
 
-    const invoiceId = this.invoicesService.createInvoice(userId, productId);
+    const invoiceId = this.invoicesService.createInvoice({userId, productId});
 
     return invoiceId;
   }
