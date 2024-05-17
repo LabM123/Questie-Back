@@ -18,24 +18,24 @@ import { Role } from '../auth/decorators/roles.enum';
 import { AuthGuard } from '../auth/guard/auth.guard';
 import { RolesGuard } from '../auth/guard/roles.guard';
 
-@ApiTags("Products")
+@ApiTags('Products')
 @Controller('products')
 export class ProductsController {
   constructor(private readonly productsService: ProductsService) {}
 
   @ApiBearerAuth()
   @Post()
-  @Roles(Role.admin)
+  @Roles(Role.admin, Role.user)
   @UseGuards(AuthGuard, RolesGuard)
   create(@Body() createProductDto: CreateProductDto) {
     return this.productsService.create(createProductDto);
   }
-  
+
   @Get()
   findAll() {
     return this.productsService.findAll();
   }
-  
+
   @ApiBearerAuth()
   @Get('/admin')
   @Roles(Role.admin)
@@ -43,12 +43,12 @@ export class ProductsController {
   findAllWithDeleted() {
     return this.productsService.findAll(true);
   }
-  
+
   @Get(':id')
   findOne(@Param('id', ParseUUIDPipe) id: string) {
     return this.productsService.findOne(id);
   }
-  
+
   @ApiBearerAuth()
   @Put(':id')
   @Roles(Role.admin)
@@ -59,7 +59,7 @@ export class ProductsController {
   ) {
     return this.productsService.update(id, updateProductDto);
   }
-  
+
   @ApiBearerAuth()
   @Delete(':id')
   @Roles(Role.admin)
