@@ -18,11 +18,11 @@ export class SearchService {
   ) {}
   async findAll() {
     const courses = await this.courseRepository.find({
-      select: ['title', 'description', 'headline'],
+      select: ['title'],
     });
 
     const modules = await this.moduleRepository.find({
-      select: ['title', 'id', 'description'],
+      select: ['title'],
     });
 
     const categories = await this.categoriesRepository.find({
@@ -30,16 +30,30 @@ export class SearchService {
     });
 
     const products = await this.productsRepository.find({
-      select: ['name', 'description'],
+      select: ['name', 'id'],
     });
 
-    const todosResultados = [
-      ...courses,
-      ...modules,
-      ...products,
-      ...categories,
+    // Agregar un tipo a cada elemento y luego combinarlos en un solo array
+    const allResult = [
+      ...courses.map((course) => ({ ...course, type: 'course' })),
+      ...modules.map((module) => ({ ...module, type: 'module' })),
+      ...products.map((product) => ({ ...product, type: 'product' })),
+      ...categories.map((category) => ({ ...category, type: 'category' })),
     ];
 
-    return todosResultados;
+    function convertirTitleToName(allResources: any[]): any[] {
+      return allResources.map((resource) => {
+        if ('title' in resource) {
+          const { title, ...resto } = resource;
+          return { ...resto, name: title };
+        } else {
+          return resource;
+        }
+      });
+    }
+
+    const allResources = convertirTitleToName(allResult);
+
+    return allResources;
   }
 }
