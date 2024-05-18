@@ -68,9 +68,14 @@ export class ProductsService {
       }
     }
 
-    const newProduct = this.productRepository.create(createProductDto);
+    const order = (await this.productRepository.count()) + 1;
 
-    return this.productRepository.save(newProduct);
+    return await this.productRepository.save(
+      this.productRepository.create({
+        ...createProductDto,
+        order,
+      }),
+    );
   }
 
   async findAll(withDeleted: boolean = false): Promise<Product[]> {
