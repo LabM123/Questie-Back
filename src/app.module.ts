@@ -18,6 +18,7 @@ import { JwtModule } from '@nestjs/jwt';
 import { UploadfileModule } from './modules/uploadfile/uploadfile.module';
 import { PaypalModule } from './modules/payments/paypal/paypal.module';
 import { PaymentsModule } from './modules/payments/payments.module';
+import { SearchModule } from "./modules/search/search.module"
 
 @Module({
   imports: [
@@ -49,6 +50,7 @@ import { PaymentsModule } from './modules/payments/payments.module';
     UploadfileModule,
     PaypalModule,
     PaymentsModule,
+    SearchModule,
   ],
   controllers: [],
   providers: [],
