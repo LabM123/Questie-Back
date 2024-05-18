@@ -25,6 +25,22 @@ export class CategoriesService {
     }
     return foundCategories;
   }
+  
+  async findByName(name: string): Promise<Category[] | undefined> {
+    // Normalizar y limpiar la cadena de búsqueda
+    const normalizedSearchName = name.normalize('NFD').replace(/[\u0300-\u036f]/g, "").toLowerCase();
+    
+    // Obtener todas las categorías
+    const allCategories = await this.categoriesRepository.find();
+    
+    // Filtrar las categorías normalizando y limpiando sus nombres
+    const filteredCategories = allCategories.filter(category => {
+      const normalizedCategoryName = category.name.normalize('NFD').replace(/[\u0300-\u036f]/g, "").toLowerCase();
+      return normalizedCategoryName.includes(normalizedSearchName);
+    });
+    
+    return filteredCategories;
+  }
 
   async findById(id: string) {
     try {
