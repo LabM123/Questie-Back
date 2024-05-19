@@ -18,19 +18,19 @@ export class SearchService {
   ) {}
   async findAll() {
     const courses = await this.courseRepository.find({
-      select: ['title'],
+      select: ['id', 'title'],
     });
 
     const modules = await this.moduleRepository.find({
-      select: ['title'],
+      select: ['id', 'title'],
     });
 
     const categories = await this.categoriesRepository.find({
-      select: ['name'],
+      select: ['id', 'name'],
     });
 
     const products = await this.productsRepository.find({
-      select: ['name', 'id'],
+      select: ['id', 'name'],
     });
 
     // Agregar un tipo a cada elemento y luego combinarlos en un solo array
