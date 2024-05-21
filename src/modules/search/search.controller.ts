@@ -1,4 +1,4 @@
-import { Controller, Get } from '@nestjs/common';
+import { Controller, Get, Param } from '@nestjs/common';
 import { SearchService } from './search.service';
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 
@@ -10,10 +10,10 @@ export class SearchController {
   @ApiBearerAuth()
   @ApiOperation({
     summary: 'Find all',
-    description:'Search all available courses, modules, lessons and products.',
+    description: 'Search all available courses, modules, lessons and products.',
   })
-  @Get()
-  findAll() {
-    return this.searchService.findAll();
+  @Get(':query')
+  findAll(@Param('query') query: string) {
+    return this.searchService.findAll(query);
   }
 }
