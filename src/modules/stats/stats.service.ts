@@ -1,25 +1,31 @@
-import { Injectable } from '@nestjs/common';
-import { Stats } from 'fs';
+import { Injectable, NotFoundException } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { User } from '../users/entities/user.entity';
 
 @Injectable()
 export class StatsService {
-  create(statData: Partial<Stats>) {
-    return 'This action adds a new stat';
+  constructor(
+    @InjectRepository(User) private readonly userRepository: Repository<User>,
+  ) {}
+
+  async addCoins(userId: string, { coins }: { coins: number }) {
+    const user = await this.userRepository.findOne({ where: { id: userId } });
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+
+    user.stats.coins += coins;
+    await this.userRepository.save(user);
   }
 
-  findAll() {
-    return `This action returns all stats`;
-  }
+  async addXp(userId: string, { xp }: { xp: number }) {
+    const user = await this.userRepository.findOne({ where: { id: userId } });
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
 
-  findOne(id: number) {
-    return `This action returns a #${id} stat`;
-  }
-
-  update(id: number, statData: Partial<Stats>) {
-    return `This action updates a #${id} stat`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} stat`;
+    user.stats.xp += xp;
+    await this.userRepository.save(user);
   }
 }
