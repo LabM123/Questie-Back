@@ -23,20 +23,26 @@ export class AuthService {
     try {
       if (!username || !password)
         throw new BadRequestException('Incomplete information');
+
       const user = await this.usersRepository.findOne({
         where: { username: username },
       });
+
       if (!user) throw new NotFoundException('Wrong email or password');
+
       const validPassword = await bcrypt.compare(password, user.password);
       if (!validPassword)
         throw new BadRequestException('Wrong email or password');
+
       const payload = {
         id: user.id,
         email: user.email,
         isAdmin: user.role,
         sub: user.id,
       };
+
       const token = this.jwtService.sign(payload);
+
       return { token, message: 'Login successful' };
     } catch (error: any) {
       throw new BadRequestException(error.message);
@@ -45,23 +51,27 @@ export class AuthService {
 
   async registerUser(user: RegisterUserDto) {
     try {
-      const foundedUser = await this.usersRepository.findOne({
+      const foundUser = await this.usersRepository.findOne({
         where: { email: user.email },
+        withDeleted: true,
       });
-      if (foundedUser) throw new ConflictException('Try another email');
+      if (foundUser) throw new ConflictException('Try another email');
+
       if (user.password !== user.confirmPassword)
         throw new BadRequestException('Both passwords must be the same.');
+
       const hashedPassword = await bcrypt.hash(user.password, 10);
       if (!hashedPassword)
         throw new InternalServerErrorException(
           'Password could not be encrypted',
         );
+
       const newUser = await this.usersRepository.save({
         ...user,
         password: hashedPassword,
       });
-      const { password, ...userWithoutPassword } = newUser;
-      return userWithoutPassword;
+
+      return newUser;
     } catch (error: any) {
       throw new BadRequestException(error.message);
     }
