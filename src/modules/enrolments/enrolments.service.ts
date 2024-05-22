@@ -82,6 +82,14 @@ export class EnrolmentsService {
     return enrolment;
   }
 
+  async findAllByUserId(userId: string): Promise<Enrolment[]> {
+    return await this.enrolmentRepository.find({
+      where: { user: { id: userId } },
+      relations: ['user', 'course'],
+      loadRelationIds: true,
+    });
+  }
+
   async update(
     id: string,
     updateEnrolmentDto: UpdateEnrolmentDto,
