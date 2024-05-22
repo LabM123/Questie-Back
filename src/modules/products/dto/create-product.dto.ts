@@ -32,8 +32,8 @@ export class CreateProductDto {
   @IsString()
   @IsOptional()
   imgUrl: string;
-  
-  @IsNotEmpty()
+
+  @IsOptional()
   @IsNumber()
   order: number;
 
