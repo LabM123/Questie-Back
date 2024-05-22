@@ -11,12 +11,14 @@ import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
 import { RegisterUserDto } from './dto/register-user.dto';
 import { InjectRepository } from '@nestjs/typeorm';
+import { MailService } from '../mail/mail.service';
 
 @Injectable()
 export class AuthService {
   constructor(
     @InjectRepository(User) private usersRepository: Repository<User>,
     private readonly jwtService: JwtService,
+    private readonly mailService: MailService
   ) {}
 
   async loginUser({ username, password }) {
@@ -56,6 +58,8 @@ export class AuthService {
         throw new InternalServerErrorException(
           'Password could not be encrypted',
         );
+      const mailingUser = await this.mailService.sendMail(user.email, 'Register Successful', 'Welcome to Questie');
+      console.log(mailingUser);
       const newUser = await this.usersRepository.save({
         ...user,
         password: hashedPassword,
