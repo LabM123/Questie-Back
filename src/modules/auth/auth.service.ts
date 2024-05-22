@@ -58,12 +58,11 @@ export class AuthService {
         throw new InternalServerErrorException(
           'Password could not be encrypted',
         );
-      const mailingUser = await this.mailService.sendMail(user.email, 'Register Successful', 'Welcome to Questie');
-      console.log(mailingUser);
-      const newUser = await this.usersRepository.save({
-        ...user,
-        password: hashedPassword,
-      });
+        const newUser = await this.usersRepository.save({
+          ...user,
+          password: hashedPassword,
+        });
+        await this.mailService.sendMail(user.email, 'Register Successful', 'Welcome to Questie');
       const { password, ...userWithoutPassword } = newUser;
       return userWithoutPassword;
     } catch (error: any) {

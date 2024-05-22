@@ -26,7 +26,6 @@ export class MailService{
         }
         try {
             await this.transporter.sendMail(mailOptions)
-            console.log('Correo Enviado');
         } catch (error: any) {
             throw new BadRequestException(error.message)
         }
