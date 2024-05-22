@@ -1,3 +1,4 @@
+import { Status } from 'src/helpers/status.enum';
 import { Course } from 'src/modules/courses/entities/course.entity';
 import { Lesson } from 'src/modules/lessons/entities/lesson.entity';
 import {
@@ -29,6 +30,13 @@ export class Module {
 
   @Column({ nullable: true, default: 'Absolutely amazing module' })
   description: string;
+
+  @Column({
+    type: 'enum',
+    enum: Status,
+    default: Status.PENDING,
+  })
+  status: Status;
 
   @ManyToOne(() => Course)
   @JoinColumn({ name: 'course_id' })
