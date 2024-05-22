@@ -1,3 +1,4 @@
+import { Status } from 'src/helpers/status.enum';
 import { Content } from 'src/modules/contents/entities/content.entity';
 import { Module } from 'src/modules/modules/entities/module.entity';
 import {
@@ -29,6 +30,13 @@ export class Lesson {
 
   @Column({ default: 0 })
   coins: number;
+
+  @Column({
+    type: 'enum',
+    enum: Status,
+    default: Status.PENDING,
+  })
+  status: Status;
 
   @Column({ unique: true })
   slug: string;

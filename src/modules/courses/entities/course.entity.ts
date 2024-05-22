@@ -1,3 +1,4 @@
+import { Status } from 'src/helpers/status.enum';
 import { Category } from 'src/modules/categories/entities/category.entity';
 import { Module } from 'src/modules/modules/entities/module.entity';
 import {
@@ -36,6 +37,13 @@ export class Course {
 
   @Column()
   bg_image: string;
+
+  @Column({
+    type: 'enum',
+    enum: Status,
+    default: Status.PENDING,
+  })
+  status: Status;
 
   @ManyToMany(() => Category, (category) => category.courses)
   @JoinTable({ name: 'category_course' })
