@@ -22,7 +22,7 @@ export class StatsService {
       throw new NotFoundException('User not found');
     }
 
-    user.stats.coins += coins;
+    user.stats.coins = Number(user.stats.coins) + Number(coins);
     await this.statsRepository.save(user.stats);
 
     return user.stats;
