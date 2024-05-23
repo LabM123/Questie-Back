@@ -56,6 +56,14 @@ export class EnrolmentsController {
   }
 
   @ApiBearerAuth()
+  @Get('user/:userId')
+  @Roles(Role.admin, Role.user)
+  @UseGuards(AuthGuard, RolesGuard)
+  findOneByUserId(@Param('id', ParseUUIDPipe) userId: string) {
+    return this.enrolmentsService.findAllByUserId(userId);
+  }
+
+  @ApiBearerAuth()
   @Put(':id')
   @Roles(Role.admin, Role.user)
   @UseGuards(AuthGuard, RolesGuard)
