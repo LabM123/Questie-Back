@@ -15,7 +15,7 @@ import { StatsService } from './stats.service';
 
 @ApiTags('Stats')
 @Controller('stats')
-export class UsersController {
+export class StatsController {
   constructor(private readonly statsService: StatsService) {}
 
   @Post('coins/:userId')
