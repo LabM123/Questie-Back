@@ -29,3 +29,6 @@ jobs:
           file: ./Dockerfile
           push: true
           tags: ${{ secrets.DOCKER_USERNAME }}/questie-back:latest
+
+      - name: Trigger deployment hook
+        run: curl -X GET ${{ secrets.DEPLOYMENT_HOOK_URL }}
