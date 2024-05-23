@@ -189,4 +189,181 @@ export class CoursesService {
       throw new BadRequestException(error.message);
     }
   }
+
+  async seeder() {
+    /* const cursos = [
+      /* {
+        category: {
+          name: "Cocina",
+          image: "https://source.unsplash.com/random"
+        },
+        course: {
+          title: 'Cocina Básica para Principiantes',
+          headline: 'Domina los fundamentos de la cocina',
+          description: 'Este curso te enseñará los conceptos básicos de la cocina, desde técnicas de corte hasta la preparación de platos sencillos. Ideal para aquellos que recién empiezan en el mundo culinario.',
+          courseImgUrl: 'https://placehold.co/600x400.png',
+          courseBgImgUrl: 'https://placehold.co/1000x200.png',
+          slug: '',
+          order: 9,
+        }
+      },
+      {
+        category: {
+          name: "Música",
+          image: "https://source.unsplash.com/random"
+        },
+        course: {
+          title: 'Introducción a la Teoría Musical',
+          headline: 'Comprende los fundamentos de la música',
+          description: 'Este curso te proporcionará una base sólida en teoría musical, cubriendo aspectos como la lectura de partituras, el ritmo, y la armonía. Perfecto para aspirantes a músicos.',
+          courseImgUrl: 'https://placehold.co/600x400.png',
+          courseBgImgUrl: 'https://placehold.co/1000x200.png',
+          order: 10,
+        }
+      },
+      {
+        category: {
+          id: 5,
+          name: "Fotografía",
+          image: "https://source.unsplash.com/random"
+        },
+        course: {
+          title: 'Fotografía Digital para Principiantes',
+          headline: 'Captura momentos increíbles',
+          description: 'Aprende los fundamentos de la fotografía digital, incluyendo el manejo de cámaras, la composición de imágenes y la edición básica. Ideal para quienes desean mejorar sus habilidades fotográficas.',
+          courseImgUrl: 'https://placehold.co/600x400.png',
+          courseBgImgUrl: 'https://placehold.co/1000x200.png',
+          slug: '',
+          order: 11,
+        }
+      },
+      {
+        category: {
+          id: 6,
+          name: "Matemáticas",
+          image: "https://source.unsplash.com/random"
+        },
+        course: {
+          title: 'Álgebra Básica',
+          headline: 'Domina los conceptos fundamentales del álgebra',
+          description: 'Este curso cubre los conceptos esenciales del álgebra, incluyendo ecuaciones, funciones y gráficas. Es perfecto para estudiantes que desean reforzar sus conocimientos en matemáticas.',
+          courseImgUrl: 'https://placehold.co/600x400.png',
+          courseBgImgUrl: 'https://placehold.co/1000x200.png',
+          slug: '',
+          order: 12,
+        }
+      },
+      {
+        category: {
+          id: 7,
+          name: "Maquillaje",
+          image: "https://source.unsplash.com/random"
+        },
+        course: {
+          title: 'Maquillaje para Principiantes',
+          headline: 'Aprende técnicas básicas de maquillaje',
+          description: 'Este curso te enseñará las técnicas básicas de maquillaje, desde la preparación de la piel hasta la aplicación de diferentes productos para lograr looks naturales y glamorosos.',
+          courseImgUrl: 'https://placehold.co/600x400.png',
+          courseBgImgUrl: 'https://placehold.co/1000x200.png',
+          slug: '',
+          order: 13,
+        }
+      },
+      {
+        category: {
+          id: 8,
+          name: "Diseño de interiores",
+          image: "https://source.unsplash.com/random"
+        },
+        course: {
+          title: 'Fundamentos del Diseño de Interiores',
+          headline: 'Transforma tus espacios con estilo',
+          description: 'Aprende los principios básicos del diseño de interiores, incluyendo la planificación de espacios, la selección de colores y la decoración. Ideal para quienes desean mejorar sus habilidades en la decoración de hogares.',
+          courseImgUrl: 'https://placehold.co/600x400.png',
+          courseBgImgUrl: 'https://placehold.co/1000x200.png',
+          slug: '',
+          order: 14,
+        }
+      }
+    ]; */
+    const cursos = [
+      {
+        title: "Cocina Básica para Principiantes",
+        headline: "Domina los fundamentos de la cocina",
+        description: "Este curso te enseñará los conceptos básicos de la cocina, desde técnicas de corte hasta la preparación de platos sencillos. Ideal para aquellos que recién empiezan en el mundo culinario.",
+        image: "https://placehold.co/600x400.png",
+        bg_image: "https://placehold.co/1000x200.png",
+        slug: ""
+      },
+      {
+        title: "Introducción a la Teoría Musical",
+        headline: "Comprende los fundamentos de la música",
+        description: "Este curso te proporcionará una base sólida en teoría musical, cubriendo aspectos como la lectura de partituras, el ritmo, y la armonía. Perfecto para aspirantes a músicos.",
+        image: "https://placehold.co/600x400.png",
+        bg_image: "https://placehold.co/1000x200.png",
+        slug: ""
+      },
+      {
+        title: "Fotografía Digital para Principiantes",
+        headline: "Captura momentos increíbles",
+        description: "Aprende los fundamentos de la fotografía digital, incluyendo el manejo de cámaras, la composición de imágenes y la edición básica. Ideal para quienes desean mejorar sus habilidades fotográficas.",
+        image: "https://placehold.co/600x400.png",
+        bg_image: "https://placehold.co/1000x200.png",
+        slug: ""
+      },
+      {
+        title: "Álgebra Básica",
+        headline: "Domina los conceptos fundamentales del álgebra",
+        description: "Este curso cubre los conceptos esenciales del álgebra, incluyendo ecuaciones, funciones y gráficas. Es perfecto para estudiantes que desean reforzar sus conocimientos en matemáticas.",
+        image: "https://placehold.co/600x400.png",
+        bg_image: "https://placehold.co/1000x200.png",
+        slug: ""
+      },
+      {
+        title: "Maquillaje para Principiantes",
+        headline: "Aprende técnicas básicas de maquillaje",
+        description: "Este curso te enseñará las técnicas básicas de maquillaje, desde la preparación de la piel hasta la aplicación de diferentes productos para lograr looks naturales y glamorosos.",
+        image: "https://placehold.co/600x400.png",
+        bg_image: "https://placehold.co/1000x200.png",
+        slug: ""
+      },
+      {
+        title: "Fundamentos del Diseño de Interiores",
+        headline: "Transforma tus espacios con estilo",
+        description: "Aprende los principios básicos del diseño de interiores, incluyendo la planificación de espacios, la selección de colores y la decoración. Ideal para quienes desean mejorar sus habilidades en la decoración de hogares.",
+        image: "https://placehold.co/600x400.png",
+        bg_image: "https://placehold.co/1000x200.png",
+        slug: ""
+      }
+    ]
+    
+  
+
+    
+    console.log(cursos);
+    
+
+    try {
+      cursos.forEach((curso) => {
+        const { title } = curso;
+        const slug = `${slugify(title, {
+          lower: true,
+          replacement: '-',
+          locale: 'en',
+        })}-${new Date().getTime()}`;
+        curso.slug = slug; // Asignar el slug a la propiedad 'slug' de cada curso
+      });
+
+      const nuevos = await cursos.forEach((curso) => {
+        console.log(curso);
+        this.coursesRepository.save(this.coursesRepository.create(curso));
+      });
+
+
+      console.log(nuevos);
+    } catch (error: any) {
+      throw new BadRequestException(error.message);
+    }
+  }
+
 }

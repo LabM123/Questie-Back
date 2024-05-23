@@ -18,7 +18,8 @@ import { JwtModule } from '@nestjs/jwt';
 import { UploadfileModule } from './modules/uploadfile/uploadfile.module';
 import { PaypalModule } from './modules/payments/paypal/paypal.module';
 import { PaymentsModule } from './modules/payments/payments.module';
-import { SearchModule } from "./modules/search/search.module"
+import { SearchModule } from './modules/search/search.module';
+import { Auth0Module } from './modules/auth0/auth0.module';
 
 @Module({
   imports: [
@@ -51,8 +52,10 @@ import { SearchModule } from "./modules/search/search.module"
     PaypalModule,
     PaymentsModule,
     SearchModule,
+    UsersModule,
+    Auth0Module
   ],
   controllers: [],
-  providers: [],
+  providers: [AuthModule],
 })
 export class AppModule {}

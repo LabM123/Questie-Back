@@ -41,7 +41,7 @@ export class User {
   lastName: string;
 
   @Column()
-  birthdate: Date;
+  birthdate?: Date;
 
   @Column({
     type: 'enum',

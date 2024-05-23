@@ -72,26 +72,26 @@ export class UsersService {
     id: string,
     updateUserDto: UpdateUserDto,
   ): Promise<{ id: string }> {
+    console.log(id, 'ID   AAAAAAAAAA');
+
     const userExists = await this.userRepository.findOne({
       where: { id },
       withDeleted: true,
     });
 
+    console.log(updateUserDto, ' UPD USER DTO ');
+
+    console.log(userExists, 'usuario   BBBBBBBBBBB');
+
     if (!userExists) {
       throw new NotFoundException(`User not found`);
     }
 
-    const user = await this.userRepository.findOne({
-      where: { email: updateUserDto.email },
-      withDeleted: true,
-    });
-
-    if (user && user.id !== id) {
-      throw new ConflictException('Email already exists');
-    }
+    userExists.profile_pic = updateUserDto.profile_pic;
+    console.log(userExists, 'usuario   CCCCCCCCCCCC');
 
     const updatedUser = await this.userRepository.update(id, {
-      ...updateUserDto,
+      ...userExists,
     });
 
     if (updatedUser.affected <= 0) {
