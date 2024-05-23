@@ -19,6 +19,7 @@ import { UploadfileModule } from './modules/uploadfile/uploadfile.module';
 import { PaypalModule } from './modules/payments/paypal/paypal.module';
 import { PaymentsModule } from './modules/payments/payments.module';
 import { SearchModule } from "./modules/search/search.module"
+import { MailModule } from './modules/mail/mail.module';
 
 @Module({
   imports: [
@@ -51,6 +52,7 @@ import { SearchModule } from "./modules/search/search.module"
     PaypalModule,
     PaymentsModule,
     SearchModule,
+    MailModule
   ],
   controllers: [],
   providers: [],
