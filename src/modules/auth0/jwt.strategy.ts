@@ -12,15 +12,16 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
         cache: true,
         rateLimit: true,
         jwksRequestsPerMinute: 5,
-        jwksUri: `https://${process.env.AUTH0_DOMAIN}/.well-known/jwks.json`,
+        jwksUri: `https://dev-elwqbme2u7whwwv8.us.auth0.com/.well-known/jwks.json`,
       }),
-      audience: process.env.AUTH0_AUDIENCE,
-      issuer: `https://${process.env.AUTH0_DOMAIN}/`,
+      audience: 'https://questie-back-latest.onrender.com/',
+      issuerBaseURL: 'https://dev-elwqbme2u7whwwv8.us.auth0.com/',
       algorithms: ['RS256'],
     });
   }
 
   async validate(payload: any) {
+    console.log('payload', payload);
     return { userId: payload.sub, email: payload.email, roles: payload.roles };
   }
 }
