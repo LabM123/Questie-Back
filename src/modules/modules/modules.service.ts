@@ -73,6 +73,7 @@ export class ModulesService {
         lessons: {
           id: true,
           title: true,
+          status: true,
         },
         course: {
           id: true,

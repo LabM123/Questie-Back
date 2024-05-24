@@ -37,6 +37,10 @@ export class CreateProductDto {
   @IsNumber()
   order: number;
 
+  @IsOptional()
+  @IsString()
+  data: JSON;
+
   @IsUUID()
   @IsOptional()
   polymorphicEntityId: string;

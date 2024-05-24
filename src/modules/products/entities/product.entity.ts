@@ -37,6 +37,9 @@ export class Product {
   @Column({ nullable: true })
   order: number;
 
+  @Column({ type: 'json', nullable: true })
+  data: JSON;
+
   @Column({ enum: PolymorphicEntityType, nullable: true })
   polymorphicEntityType: string;
 
