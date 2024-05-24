@@ -20,6 +20,8 @@ import { PaymentsModule } from './modules/payments/payments.module';
 import { SearchModule } from './modules/search/search.module';
 import { AuthModule } from './modules/auth0/auth0.module';
 import { MailModule } from './modules/mail/mail.module';
+import { ScheduleModule } from '@nestjs/schedule';
+import { NotificationsModule } from './modules/notifications/notifications.module';
 
 @Module({
   imports: [
@@ -37,6 +39,7 @@ import { MailModule } from './modules/mail/mail.module';
       secret: process.env.JWT_SECRET,
       signOptions: { expiresIn: '2h' },
     }),
+    ScheduleModule.forRoot(),
     UsersModule,
     ProductsModule,
     CategoriesModule,
@@ -53,6 +56,8 @@ import { MailModule } from './modules/mail/mail.module';
     SearchModule,
     UsersModule,
     AuthModule,
+    MailModule,
+    NotificationsModule,
   ],
   controllers: [],
   providers: [AuthModule],
