@@ -11,12 +11,17 @@ import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
 import { RegisterUserDto } from './dto/register-user.dto';
 import { InjectRepository } from '@nestjs/typeorm';
+import { MailService } from '../mail/mail.service';
+import { Stats } from '../stats/entities/stats.entity';
 
 @Injectable()
 export class AuthService {
   constructor(
     @InjectRepository(User) private usersRepository: Repository<User>,
+    @InjectRepository(Stats)
+    private readonly statsRepository: Repository<Stats>,
     private readonly jwtService: JwtService,
+    private readonly mailService: MailService,
   ) {}
 
   async loginUser({ username, password }) {
@@ -70,6 +75,16 @@ export class AuthService {
         ...user,
         password: hashedPassword,
       });
+
+      await this.statsRepository.save(
+        this.statsRepository.create({ user: newUser }),
+      );
+
+      await this.mailService.sendMail(
+        user.email,
+        'Register Successful',
+        'Welcome to Questie',
+      );
 
       return newUser;
     } catch (error: any) {

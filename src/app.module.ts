@@ -20,6 +20,7 @@ import { PaypalModule } from './modules/payments/paypal/paypal.module';
 import { PaymentsModule } from './modules/payments/payments.module';
 import { SearchModule } from './modules/search/search.module';
 import { Auth0Module } from './modules/auth0/auth0.module';
+import { MailModule } from './modules/mail/mail.module';
 
 @Module({
   imports: [
@@ -52,8 +53,6 @@ import { Auth0Module } from './modules/auth0/auth0.module';
     PaypalModule,
     PaymentsModule,
     SearchModule,
-    UsersModule,
-    Auth0Module
   ],
   controllers: [],
   providers: [AuthModule],

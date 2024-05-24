@@ -2,21 +2,30 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { User } from '../users/entities/user.entity';
+import { Stats } from './entities/stats.entity';
 
 @Injectable()
 export class StatsService {
   constructor(
     @InjectRepository(User) private readonly userRepository: Repository<User>,
+    @InjectRepository(Stats)
+    private readonly statsRepository: Repository<Stats>,
   ) {}
 
   async addCoins(userId: string, { coins }: { coins: number }) {
-    const user = await this.userRepository.findOne({ where: { id: userId } });
+    const user = await this.userRepository.findOne({
+      where: { id: userId },
+      relations: ['stats'],
+    });
+
     if (!user) {
       throw new NotFoundException('User not found');
     }
 
     user.stats.coins += coins;
-    await this.userRepository.save(user);
+    await this.statsRepository.save(user.stats);
+
+    return user.stats;
   }
 
   async addXp(userId: string, { xp }: { xp: number }) {
