@@ -12,13 +12,13 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { DataSourceOptions } from 'typeorm';
 import { StatsModule } from './modules/stats/stats.module';
 import { EnrolmentsModule } from './modules/enrolments/enrolments.module';
-import { AuthModule } from './modules/auth/auth.module';
 import typeOrmConfig from './config/typeorm';
 import { JwtModule } from '@nestjs/jwt';
 import { UploadfileModule } from './modules/uploadfile/uploadfile.module';
 import { PaypalModule } from './modules/payments/paypal/paypal.module';
 import { PaymentsModule } from './modules/payments/payments.module';
-import { SearchModule } from "./modules/search/search.module"
+import { SearchModule } from './modules/search/search.module';
+import { AuthModule } from './modules/auth0/auth0.module';
 import { MailModule } from './modules/mail/mail.module';
 import { ScheduleModule } from '@nestjs/schedule';
 import { NotificationsModule } from './modules/notifications/notifications.module';
@@ -50,15 +50,16 @@ import { NotificationsModule } from './modules/notifications/notifications.modul
     InvoicesModule,
     StatsModule,
     EnrolmentsModule,
-    AuthModule,
     UploadfileModule,
     PaypalModule,
     PaymentsModule,
     SearchModule,
+    UsersModule,
+    AuthModule,
     MailModule,
     NotificationsModule,
   ],
   controllers: [],
-  providers: [],
+  providers: [AuthModule],
 })
 export class AppModule {}

@@ -59,7 +59,10 @@ export class UsersService {
   }
 
   async findOne(id: string): Promise<User> {
-    const user = await this.userRepository.findOne({ where: { id }, relations: ['stats'], });
+    const user = await this.userRepository.findOne({
+      where: { id },
+      relations: ['stats'],
+    });
 
     if (!user) {
       throw new NotFoundException(`User with id ${id} not found`);
@@ -76,22 +79,14 @@ export class UsersService {
       where: { id },
       withDeleted: true,
     });
-
     if (!userExists) {
       throw new NotFoundException(`User not found`);
     }
 
-    const user = await this.userRepository.findOne({
-      where: { email: updateUserDto.email },
-      withDeleted: true,
-    });
-
-    if (user && user.id !== id) {
-      throw new ConflictException('Email already exists');
-    }
+    userExists.profile_pic = updateUserDto.profile_pic;
 
     const updatedUser = await this.userRepository.update(id, {
-      ...updateUserDto,
+      ...userExists,
     });
 
     if (updatedUser.affected <= 0) {
