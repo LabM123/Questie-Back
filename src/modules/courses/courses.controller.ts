@@ -224,9 +224,4 @@ export class CoursesController {
   async remove(@Param('id', ParseUUIDPipe) id: string) {
     return this.coursesService.deleteCourse(id);
   }
-
-  @Post('seeder')
-  async seeder() {
-    return this.coursesService.seeder();
-  }
 }

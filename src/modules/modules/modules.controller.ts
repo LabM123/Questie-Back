@@ -64,14 +64,4 @@ export class ModulesController {
   remove(@Param('id', ParseUUIDPipe) id: string) {
     return this.modulesService.removeModule(id);
   }
-
-  /*  @Post(':id')
-  seeder() {
-    return this.modulesService.seeder();
-  }
-    
-  @Put("seed")
-  updateSeed() {
-    return this.modulesService.updateMod();
-  } */
 }

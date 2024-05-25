@@ -59,7 +59,10 @@ export class UsersService {
   }
 
   async findOne(id: string): Promise<User> {
-    const user = await this.userRepository.findOne({ where: { id }, relations: ['stats'], });
+    const user = await this.userRepository.findOne({
+      where: { id },
+      relations: ['stats'],
+    });
 
     if (!user) {
       throw new NotFoundException(`User with id ${id} not found`);
@@ -72,23 +75,15 @@ export class UsersService {
     id: string,
     updateUserDto: UpdateUserDto,
   ): Promise<{ id: string }> {
-    console.log(id, 'ID   AAAAAAAAAA');
-
     const userExists = await this.userRepository.findOne({
       where: { id },
       withDeleted: true,
     });
-
-    console.log(updateUserDto, ' UPD USER DTO ');
-
-    console.log(userExists, 'usuario   BBBBBBBBBBB');
-
     if (!userExists) {
       throw new NotFoundException(`User not found`);
     }
 
     userExists.profile_pic = updateUserDto.profile_pic;
-    console.log(userExists, 'usuario   CCCCCCCCCCCC');
 
     const updatedUser = await this.userRepository.update(id, {
       ...userExists,
