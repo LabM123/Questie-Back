@@ -18,10 +18,12 @@ import { UploadfileModule } from './modules/uploadfile/uploadfile.module';
 import { PaypalModule } from './modules/payments/paypal/paypal.module';
 import { PaymentsModule } from './modules/payments/payments.module';
 import { SearchModule } from './modules/search/search.module';
-import { AuthModule } from './modules/auth0/auth0.module';
+import { Auth0Module } from './modules/auth0/auth0.module';
+
 import { MailModule } from './modules/mail/mail.module';
 import { ScheduleModule } from '@nestjs/schedule';
 import { NotificationsModule } from './modules/notifications/notifications.module';
+import { AuthModule } from './modules/auth/auth.module';
 
 @Module({
   imports: [
@@ -60,6 +62,6 @@ import { NotificationsModule } from './modules/notifications/notifications.modul
     NotificationsModule,
   ],
   controllers: [],
-  providers: [AuthModule],
+  providers: [AuthModule, Auth0Module],
 })
 export class AppModule {}
