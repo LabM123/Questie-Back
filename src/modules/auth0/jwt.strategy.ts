@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+/* import { Injectable } from '@nestjs/common';
 import { PassportStrategy } from '@nestjs/passport';
 import { ExtractJwt, Strategy } from 'passport-jwt';
 import { passportJwtSecret } from 'jwks-rsa';
@@ -16,7 +16,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
       }),
       audience: 'https://questie-back-latest.onrender.com/',
       issuerBaseURL: 'https://dev-elwqbme2u7whwwv8.us.auth0.com/',
-      algorithms: ['RS256'],
+      algorithms: ['hs256'],
     });
   }
 
@@ -25,3 +25,4 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     return { userId: payload.sub, email: payload.email, roles: payload.roles };
   }
 }
+ */
