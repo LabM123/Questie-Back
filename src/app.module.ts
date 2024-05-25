@@ -19,7 +19,6 @@ import { PaypalModule } from './modules/payments/paypal/paypal.module';
 import { PaymentsModule } from './modules/payments/payments.module';
 import { SearchModule } from './modules/search/search.module';
 import { Auth0Module } from './modules/auth0/auth0.module';
-
 import { MailModule } from './modules/mail/mail.module';
 import { ScheduleModule } from '@nestjs/schedule';
 import { NotificationsModule } from './modules/notifications/notifications.module';
@@ -56,12 +55,13 @@ import { AuthModule } from './modules/auth/auth.module';
     PaypalModule,
     PaymentsModule,
     SearchModule,
-    UsersModule,
     AuthModule,
+    Auth0Module,
     MailModule,
     NotificationsModule,
   ],
   controllers: [],
-  providers: [AuthModule, Auth0Module],
+  providers: [],
 })
 export class AppModule {}
+
