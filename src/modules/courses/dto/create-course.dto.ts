@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNotEmpty, IsString, MaxLength, MinLength } from 'class-validator';
+import { IsNotEmpty, IsOptional, IsString, MaxLength, MinLength } from 'class-validator';
 
 export class CreateCourseDto {
   @ApiProperty({
@@ -28,4 +28,12 @@ export class CreateCourseDto {
   @IsNotEmpty()
   @IsString()
   description: string;
+
+  @ApiProperty({
+    example: '"pending" or "complete".',
+    description: 'The status of the course that is being created or updated',
+  })
+  @IsOptional()
+  @IsString()
+  status: string;
 }
