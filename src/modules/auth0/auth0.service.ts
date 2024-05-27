@@ -6,7 +6,7 @@ import {
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import * as bcrypt from 'bcrypt';
-import { User } from '../users/entities/user.entity'; // Asegúrate de que esta ruta sea correcta
+import { User } from '../users/entities/user.entity';
 import { CreateUserDto } from '../users/dto/create-user.dto';
 import { JwtService } from '@nestjs/jwt';
 
@@ -17,16 +17,6 @@ export class Auth0Service {
     private userRepository: Repository<User>,
     private readonly jwtService: JwtService,
   ) {}
-
-  /*   private generateToken(user: User): string {
-    const payload = {
-      id: user.id,
-      email: user.email,
-      isAdmin: user.role,
-      sub: user.id,
-    };
-    return this.jwtService.sign(payload);
-  } */
 
   async createAuth0User(createUserDto: CreateUserDto): Promise<User | any> {
     const userExists = await this.userRepository.findOne({
@@ -53,12 +43,12 @@ export class Auth0Service {
       };
 
       const token = this.jwtService.sign(payload, {
-        algorithm: 'HS256'
+        algorithm: 'HS256',
       });
 
       return { token, userExists, message: 'Login successful' };
     }
-    
+
     try {
       const encryptedPassword = await bcrypt.hash(userExists.password, 10);
       if (!encryptedPassword)

@@ -1,4 +1,5 @@
 import { Status } from 'src/helpers/status.enum';
+import { Assessment } from 'src/modules/assessment/entities/assessment.entity';
 import { Category } from 'src/modules/categories/entities/category.entity';
 import { Module } from 'src/modules/modules/entities/module.entity';
 import {
@@ -44,6 +45,9 @@ export class Course {
     default: Status.PENDING,
   })
   status: Status;
+
+  @OneToMany(() => Assessment, (assessment) => assessment.course)
+  assessment: Assessment[];
 
   @ManyToMany(() => Category, (category) => category.courses)
   @JoinTable({ name: 'category_course' })

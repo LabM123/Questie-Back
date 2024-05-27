@@ -23,6 +23,7 @@ import { MailModule } from './modules/mail/mail.module';
 import { ScheduleModule } from '@nestjs/schedule';
 import { NotificationsModule } from './modules/notifications/notifications.module';
 import { AuthModule } from './modules/auth/auth.module';
+import { AssessmentModule } from './modules/assessment/assessment.module';
 
 @Module({
   imports: [
@@ -59,9 +60,9 @@ import { AuthModule } from './modules/auth/auth.module';
     Auth0Module,
     MailModule,
     NotificationsModule,
+    AssessmentModule,
   ],
   controllers: [],
   providers: [],
 })
 export class AppModule {}
-

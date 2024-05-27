@@ -1,3 +1,4 @@
+import { Assessment } from 'src/modules/assessment/entities/assessment.entity';
 import { Enrolment } from 'src/modules/enrolments/entities/enrolment.entity';
 import { Lesson } from 'src/modules/lessons/entities/lesson.entity';
 import { Stats } from 'src/modules/stats/entities/stats.entity';
@@ -49,6 +50,9 @@ export class User {
     default: 'user',
   })
   role: string;
+
+  @OneToMany(() => Assessment, (assessment) => assessment.user)
+  assessment: Assessment[];
 
   @OneToOne(() => Stats, (stats) => stats.user)
   @JoinColumn({ name: 'stats_id' })
