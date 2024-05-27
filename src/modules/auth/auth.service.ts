@@ -60,7 +60,6 @@ export class AuthService {
         where: { email: user.email },
         withDeleted: true,
       });
-      if (foundUser) throw new ConflictException('Try another email');
 
       if (user.password !== user.confirmPassword)
         throw new BadRequestException('Both passwords must be the same.');
@@ -70,6 +69,19 @@ export class AuthService {
         throw new InternalServerErrorException(
           'Password could not be encrypted',
         );
+
+      if (foundUser) {
+        if (foundUser.deleted_at) {
+          foundUser.deleted_at = null;
+          this.usersRepository.save({
+            ...user,
+            password: hashedPassword,
+            ...foundUser,
+          });
+          return foundUser;
+        }
+        throw new ConflictException('Try another email');
+      }
 
       const newUser = await this.usersRepository.save({
         ...user,

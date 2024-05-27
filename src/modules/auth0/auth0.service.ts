@@ -1,8 +1,4 @@
-import {
-  BadRequestException,
-  Injectable,
-  InternalServerErrorException,
-} from '@nestjs/common';
+import { Injectable, InternalServerErrorException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import * as bcrypt from 'bcrypt';
@@ -19,7 +15,7 @@ export class Auth0Service {
   ) {}
 
   async createAuth0User(createUserDto: CreateUserDto): Promise<User | any> {
-    const userExists = await this.userRepository.findOne({
+    const foundUser = await this.userRepository.findOne({
       where: [
         { username: createUserDto.username },
         { email: createUserDto.email },
@@ -27,30 +23,23 @@ export class Auth0Service {
       withDeleted: true,
     });
 
-    if (userExists) {
-      const validPassword = await bcrypt.compare(
-        createUserDto.password,
-        userExists.password,
-      );
-      if (!validPassword)
-        throw new BadRequestException('Wrong email or password');
-
+    if (foundUser) {
       const payload = {
-        id: userExists.id,
-        email: userExists.email,
-        isAdmin: userExists.role,
-        sub: userExists.id,
+        id: foundUser.id,
+        email: foundUser.email,
+        isAdmin: foundUser.role,
+        sub: foundUser.id,
       };
 
       const token = this.jwtService.sign(payload, {
         algorithm: 'HS256',
       });
 
-      return { token, userExists, message: 'Login successful' };
+      return { token, user: foundUser, message: 'Login successful' };
     }
 
     try {
-      const encryptedPassword = await bcrypt.hash(userExists.password, 10);
+      const encryptedPassword = await bcrypt.hash(createUserDto.password, 10);
       if (!encryptedPassword)
         throw new InternalServerErrorException(
           'Password could not be encrypted',
@@ -61,8 +50,20 @@ export class Auth0Service {
         password: encryptedPassword,
       });
 
-      const savedUser = await this.userRepository.save(newUser);
-      return savedUser;
+      const user = await this.userRepository.save(newUser);
+
+      const payload = {
+        id: user.id,
+        email: user.email,
+        isAdmin: user.role,
+        sub: user.id,
+      };
+
+      const token = this.jwtService.sign(payload, {
+        algorithm: 'HS256',
+      });
+
+      return { token, user, message: 'User creation successful' };
     } catch (error) {
       throw new InternalServerErrorException('Error creating user');
     }
