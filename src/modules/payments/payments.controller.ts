@@ -45,8 +45,7 @@ export class PaymentsController {
 
   @ApiBearerAuth()
   @Post('/mercado-pago')
-  @Roles(Role.admin, Role.user)
-  @UseGuards(AuthGuard, RolesGuard)
+  @UseGuards(AuthGuard)
   async payWithMercadoPago(@Req() request: Request) {
     return this.paymentsService.payWithMercadoPago(request);
   }

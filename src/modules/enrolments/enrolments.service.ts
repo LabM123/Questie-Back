@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   ConflictException,
   Injectable,
   InternalServerErrorException,
@@ -11,6 +12,8 @@ import { Enrolment } from './entities/enrolment.entity';
 import { Repository } from 'typeorm/repository/Repository';
 import { Course } from '../courses/entities/course.entity';
 import { User } from '../users/entities/user.entity';
+import { Product } from '../products/entities/product.entity';
+import { Stats } from '../stats/entities/stats.entity';
 
 @Injectable()
 export class EnrolmentsService {
@@ -21,6 +24,10 @@ export class EnrolmentsService {
     private userRepository: Repository<User>,
     @InjectRepository(Course)
     private courseRepository: Repository<Course>,
+    @InjectRepository(Product)
+    private productRepository: Repository<Product>,
+    @InjectRepository(Stats)
+    private statsRepository: Repository<Stats>,
   ) {}
 
   async create(createEnrolmentDto: CreateEnrolmentDto): Promise<Enrolment> {
@@ -112,6 +119,25 @@ export class EnrolmentsService {
     }
 
     return { id };
+  }
+
+  async buyCourse({courseId, userId, productId}){
+    try {
+      const foundedCourse = await this.courseRepository.findOne({where: {id:courseId}});
+      const foundedUser = await this.userRepository.findOne({where: {id:userId}, relations: ['stats']});
+      const foundedProduct = await this.productRepository.findOne({where: {id:productId}});
+      if(!foundedCourse) throw new NotFoundException('Course not found')
+      if(!foundedUser) throw new NotFoundException('User not found')
+      if(!foundedProduct) throw new NotFoundException('Product not found')
+      const validTransaction = foundedUser.stats.coins - foundedProduct.price;
+      if(validTransaction < 0) throw new BadRequestException('The user dont have enough coins to buy the product')
+      const coursePurchase = await this.statsRepository.update(foundedUser.stats.id, {...foundedUser.stats, coins: (foundedUser.stats.coins - foundedProduct.price)})
+      if(!coursePurchase) throw new BadRequestException('Transaction failed')
+      const newEnrolment = await this.create({userId, courseId});
+      return newEnrolment;
+    } catch (error: any) {
+      throw new BadRequestException(error.message)
+    }
   }
 
   async remove(id: string): Promise<{ id: string }> {
