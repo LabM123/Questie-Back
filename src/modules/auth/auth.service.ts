@@ -60,7 +60,15 @@ export class AuthService {
         where: { email: user.email },
         withDeleted: true,
       });
-      if (foundUser) throw new ConflictException('Try another email');
+
+      if (foundUser) {
+        if (foundUser.deleted_at) {
+          foundUser.deleted_at = null;
+          this.usersRepository.save(foundUser);
+          return foundUser;
+        }
+        throw new ConflictException('Try another email');
+      }
 
       if (user.password !== user.confirmPassword)
         throw new BadRequestException('Both passwords must be the same.');
