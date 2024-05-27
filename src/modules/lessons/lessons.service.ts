@@ -58,99 +58,126 @@ export class LessonsService {
     return lesson;
   }
 
-  async createLesson(createLessonDto: CreateLessonDto) {
+  async createLesson(createLessonDtos: CreateLessonDto[]) {
     try {
-      const { module_id, order } = createLessonDto;
-      const foundModule = await this.moduleRepository.findOne({
-        where: { id: module_id },
-        loadRelationIds: true,
-      });
-      if (!foundModule) throw new NotFoundException('Module not found');
+      const lessons = [];
 
-      const moduleLessons = foundModule.lessons;
-      const orderExists = moduleLessons.find(
-        (lesson) => lesson.order === order,
-      );
-      if (orderExists) {
-        throw new ConflictException('Lesson order already exists');
+      for (const createLessonDto of createLessonDtos) {
+        const { module_id, order } = createLessonDto;
+        const foundModule = await this.moduleRepository.findOne({
+          where: { id: module_id },
+          loadRelationIds: true,
+        });
+
+        if (!foundModule) throw new NotFoundException('Module not found');
+
+        const moduleLessons = foundModule.lessons;
+        const orderExists = moduleLessons.find(
+          (lesson) => lesson.order === order,
+        );
+        if (orderExists) {
+          throw new ConflictException('Lesson order already exists');
+        }
+
+        const slug = `${slugify(createLessonDto.title, {
+          lower: true,
+          replacement: '-',
+          locale: 'en',
+        })}-${new Date().getTime()}`;
+
+        const newLesson = await this.lessonsRepository.save(
+          this.lessonsRepository.create({
+            module: foundModule,
+            order,
+            ...createLessonDto,
+            slug,
+          }),
+        );
+
+        const savedLesson = await this.lessonsRepository.findOne({
+          where: { id: newLesson.id },
+          loadRelationIds: true,
+        });
+
+        lessons.push(savedLesson);
       }
 
-      const slug = `${slugify(createLessonDto.title, {
-        lower: true,
-        replacement: '-',
-        locale: 'en',
-      })}-${new Date().getTime()}`;
-
-      const newLesson = await this.lessonsRepository.save(
-        this.lessonsRepository.create({
-          module: foundModule,
-          order,
-          ...createLessonDto,
-          slug,
-        }),
-      );
-
-      return await this.lessonsRepository.findOne({
-        where: { id: newLesson.id },
-        loadRelationIds: true,
-      });
+      return lessons;
     } catch (error: any) {
       throw new InternalServerErrorException(error.message);
     }
   }
 
-  async updateLesson(id: string, updateLessonDto: UpdateLessonDto) {
-    const foundLesson = await this.lessonsRepository.findOne({ where: { id } });
-    if (!foundLesson) {
-      throw new NotFoundException('Lesson not found');
-    }
+  async updateLesson(
+    lessonsDtoArray: { id: string; updateLessonDto: UpdateLessonDto }[],
+  ) {
+    const updatedLessons = [];
 
-    if (updateLessonDto.title) {
-      const slugTimestamp = foundLesson.slug.split('-').pop();
-      const slug = `${slugify(updateLessonDto.title, {
-        lower: true,
-        replacement: '-',
-        locale: 'en',
-      })}-${slugTimestamp}`;
+    for (const lessonDto of lessonsDtoArray) {
+      const { id, updateLessonDto } = lessonDto;
 
-      foundLesson.slug = slug;
-    }
-
-    if (updateLessonDto.module_id) {
-      const foundModule = await this.moduleRepository.findOne({
-        where: { id: updateLessonDto.module_id },
-      });
-      if (!foundModule) {
-        throw new NotFoundException('Module not found');
-      }
-
-      delete updateLessonDto.module_id;
-
-      const updatedLesson = await this.lessonsRepository.update(id, {
-        module: foundModule,
-        ...foundLesson,
-        ...updateLessonDto,
-      });
-
-      if (updatedLesson.affected <= 0) {
-        throw new InternalServerErrorException('Lesson not updated');
-      }
-      return await this.lessonsRepository.findOne({ where: { id } });
-    } else {
-      const updatedLesson = await this.lessonsRepository.update(id, {
-        ...foundLesson,
-        ...updateLessonDto,
-      });
-
-      if (updatedLesson.affected <= 0) {
-        throw new InternalServerErrorException('Lesson not updated');
-      }
-
-      return await this.lessonsRepository.findOne({
+      const foundLesson = await this.lessonsRepository.findOne({
         where: { id },
-        loadRelationIds: true,
       });
+      if (!foundLesson) {
+        throw new NotFoundException('Lesson not found');
+      }
+
+      if (updateLessonDto.title) {
+        const slugTimestamp = foundLesson.slug.split('-').pop();
+        const slug = `${slugify(updateLessonDto.title, {
+          lower: true,
+          replacement: '-',
+          locale: 'en',
+        })}-${slugTimestamp}`;
+
+        foundLesson.slug = slug;
+      }
+
+      if (updateLessonDto.module_id) {
+        const foundModule = await this.moduleRepository.findOne({
+          where: { id: updateLessonDto.module_id },
+        });
+        if (!foundModule) {
+          throw new NotFoundException('Module not found');
+        }
+
+        delete updateLessonDto.module_id;
+
+        const updatedLesson = await this.lessonsRepository.update(id, {
+          module: foundModule,
+          ...foundLesson,
+          ...updateLessonDto,
+        });
+
+        if (updatedLesson.affected <= 0) {
+          throw new InternalServerErrorException('Lesson not updated');
+        }
+
+        const savedLesson = await this.lessonsRepository.findOne({
+          where: { id },
+        });
+        updatedLessons.push(savedLesson);
+      } else {
+        const updatedLesson = await this.lessonsRepository.update(id, {
+          ...foundLesson,
+          ...updateLessonDto,
+        });
+
+        if (updatedLesson.affected <= 0) {
+          throw new InternalServerErrorException('Lesson not updated');
+        }
+
+        const savedLesson = await this.lessonsRepository.findOne({
+          where: { id },
+          loadRelationIds: true,
+        });
+
+        updatedLessons.push(savedLesson);
+      }
     }
+
+    return updatedLessons;
   }
 
   async removeLesson(id: string) {
