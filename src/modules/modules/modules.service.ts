@@ -18,37 +18,48 @@ export class ModulesService {
     @InjectRepository(Course) private courseRepository: Repository<Course>,
   ) {}
 
-  async createModule(createModuleDto: CreateModuleDto) {
+  async createModule(
+    createModuleDtoArray: CreateModuleDto[],
+  ): Promise<Module[]> {
     try {
-      const { course_id } = createModuleDto;
+      const savedModules: Module[] = [];
 
-      const foundCourse = await this.courseRepository.findOne({
-        where: { id: course_id },
-      });
-      if (!foundCourse) {
-        throw new NotFoundException('Course not found');
-      }
+      for (const createModuleDto of createModuleDtoArray) {
+        const { course_id, title } = createModuleDto;
 
-      const slug = `${slugify(createModuleDto.title, {
-        lower: true,
-        replacement: '-',
-        locale: 'en',
-      })}-${new Date().getTime()}`;
+        const foundCourse = await this.courseRepository.findOne({
+          where: { id: course_id },
+        });
 
-      const savedModule = await this.moduleRepository.save(
-        this.moduleRepository.create({
+        if (!foundCourse) {
+          throw new NotFoundException(`Course with id ${course_id} not found`);
+        }
+
+        const slug = `${slugify(title, {
+          lower: true,
+          replacement: '-',
+          locale: 'en',
+        })}-${new Date().getTime()}`;
+
+        const moduleToSave = this.moduleRepository.create({
           ...createModuleDto,
           course: foundCourse,
           slug,
-        }),
-      );
+        });
 
-      return await this.moduleRepository.findOne({
-        where: { id: savedModule.id },
-        loadRelationIds: true,
-      });
-    } catch (error) {
-      throw new InternalServerErrorException(error);
+        const savedModule = await this.moduleRepository.save(moduleToSave);
+
+        savedModules.push(
+          await this.moduleRepository.findOne({
+            where: { id: savedModule.id },
+            loadRelationIds: true,
+          }),
+        );
+      }
+
+      return savedModules;
+    } catch (error: any) {
+      throw new InternalServerErrorException(error.message);
     }
   }
 
@@ -87,39 +98,60 @@ export class ModulesService {
     return moduleExists;
   }
 
-  async updateModule(id: string, updateModuleDto: UpdateModuleDto) {
-    const foundModule = await this.moduleRepository.findOne({
-      where: { id },
-    });
+  async updateModule(
+    id: string,
+    updateModuleDtoArray: UpdateModuleDto[],
+  ): Promise<Module[]> {
+    try {
+      const updatedModules: Module[] = [];
 
-    if (!foundModule) {
-      throw new NotFoundException('Module not found');
+      for (const updateModuleDto of updateModuleDtoArray) {
+        const { title } = updateModuleDto;
+
+        const foundModule = await this.moduleRepository.findOne({
+          where: { id },
+        });
+
+        if (!foundModule) {
+          throw new NotFoundException(`Module with id ${id} not found`);
+        }
+
+        if (title) {
+          const slugTimestamp = foundModule.slug.split('-').pop();
+          const slug = `${slugify(title, {
+            lower: true,
+            replacement: '-',
+            locale: 'en',
+          })}-${slugTimestamp}`;
+
+          foundModule.slug = slug;
+        }
+
+        const updatedModule = await this.moduleRepository.update(id, {
+          ...foundModule,
+          ...updateModuleDto,
+        });
+
+        if (updatedModule.affected <= 0) {
+          throw new InternalServerErrorException(
+            `Module with id ${id} not updated`,
+          );
+        }
+
+        const reloadedModule = await this.moduleRepository.findOne({
+          where: { id },
+          loadRelationIds: true,
+        });
+
+        if (reloadedModule) {
+          updatedModules.push(reloadedModule);
+        }
+      }
+
+      return updatedModules;
+    } catch (error: any) {
+      throw new InternalServerErrorException(error.message);
     }
-
-    if (updateModuleDto.title) {
-      const slugTimestamp = foundModule.slug.split('-').pop();
-      const slug = `${slugify(updateModuleDto.title, {
-        lower: true,
-        replacement: '-',
-        locale: 'en',
-      })}-${slugTimestamp}`;
-
-      foundModule.slug = slug;
-    }
-
-    const updatedModule = await this.moduleRepository.update(id, {
-      ...foundModule,
-      ...updateModuleDto,
-    });
-
-    if (updatedModule.affected <= 0) {
-      throw new InternalServerErrorException('Module not updated');
-    }
-
-    return await this.moduleRepository.findOne({
-      where: { id },
-      loadRelationIds: true,
-    });
   }
 
   async removeModule(id: string) {
