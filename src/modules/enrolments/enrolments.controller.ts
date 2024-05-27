@@ -17,6 +17,7 @@ import { Roles } from '../auth/decorators/roles.decorator';
 import { Role } from '../auth/decorators/roles.enum';
 import { AuthGuard } from '../auth/guard/auth.guard';
 import { RolesGuard } from '../auth/guard/roles.guard';
+import { BuyCourseDto } from './dto/buyCourse.dto';
 
 @ApiTags('Enrolments')
 @Controller('enrolments')
@@ -72,6 +73,14 @@ export class EnrolmentsController {
     @Body() updateEnrolmentDto: UpdateEnrolmentDto,
   ) {
     return this.enrolmentsService.update(id, updateEnrolmentDto);
+  }
+
+  @Post('buycourse')
+  // @UseGuards(AuthGuard)
+  buyCourse(
+    @Body() buyCourseDto: BuyCourseDto
+  ){
+    return this.enrolmentsService.buyCourse(buyCourseDto)
   }
 
   @ApiBearerAuth()

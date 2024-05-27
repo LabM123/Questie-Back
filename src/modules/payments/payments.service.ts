@@ -15,8 +15,7 @@ import { Course } from '../courses/entities/course.entity';
 import { Enrolment } from '../enrolments/entities/enrolment.entity';
 import { InvoicesService } from '../invoices/invoices.service';
 import { Request } from 'express';
-import { Preference } from 'mercadopago';
-import { client } from 'src/config/mercadopago';
+import axios from 'axios';
 
 @Injectable()
 export class PaymentsService {
@@ -35,6 +34,7 @@ export class PaymentsService {
 
   async payWithMercadoPago(request: Request){
     try {
+      const idempotencyKey = request.headers['x-idempotency-key'];
       const body = {
         items: [
           {
@@ -52,9 +52,17 @@ export class PaymentsService {
         },
         auto_return: 'approved'
       }
-      const preference = new Preference(client);
-      const result = await preference.create({body})
-      return {id: result.id}
+      // const preference = new Preference(client);
+      // const result = await preference.create({body, idempotencyKey})
+      // return {id: result.id}
+      const response = await axios.post('https://api.mercadopago.com/checkout/preferences', body, {
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${process.env.MERCADOPAGO_ACCESS_TOKEN}`,
+          'x-idempotency-key': idempotencyKey
+        }
+      })
+      return { id: response.data.id }
     } catch (error:any) {
       throw new BadRequestException(error.message)
     }
