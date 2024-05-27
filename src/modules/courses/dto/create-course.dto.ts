@@ -1,5 +1,12 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNotEmpty, IsOptional, IsString, MaxLength, MinLength } from 'class-validator';
+import {
+  IsNotEmpty,
+  IsOptional,
+  IsString,
+  MaxLength,
+  MinLength,
+} from 'class-validator';
+import { Status } from 'src/helpers/status.enum';
 
 export class CreateCourseDto {
   @ApiProperty({
@@ -35,5 +42,5 @@ export class CreateCourseDto {
   })
   @IsOptional()
   @IsString()
-  status: string;
+  status: Status;
 }
