@@ -14,7 +14,7 @@ import { Lesson } from '../lessons/entities/lesson.entity';
 export class ContentsService {
   constructor(
     @InjectRepository(Content) private contentsRepository: Repository<Content>,
-    @InjectRepository(Lesson) private lessonssRepository: Repository<Lesson>,
+    @InjectRepository(Lesson) private lessonsRepository: Repository<Lesson>,
   ) {}
 
   async findAll(withDeleted: boolean = false) {
@@ -45,24 +45,23 @@ export class ContentsService {
     }
   }
 
-  async create(createContentDto: CreateContentDto) {
+  async create(createContentDto: CreateContentDto): Promise<Content[]> {
+    const { lesson_id, contents } = createContentDto;
+
     try {
-      const foundLesson = await this.lessonssRepository.findOne({
-        where: { id: createContentDto.lesson_id },
+      const foundLesson = await this.lessonsRepository.findOne({
+        where: { id: lesson_id },
         loadRelationIds: true,
       });
+
       if (!foundLesson) throw new NotFoundException('Lesson not found');
-
-      const newContent = await this.contentsRepository.save({
-        type: createContentDto.type,
-        content: createContentDto.content,
+      console.log(contents);
+      const newContents = contents.map((content) => ({
+        ...content,
         lesson: foundLesson,
-      });
+      }));
 
-      return await this.contentsRepository.findOne({
-        where: { id: newContent.id },
-        loadRelationIds: true,
-      });
+      return await this.contentsRepository.save(newContents);
     } catch (error: any) {
       throw new BadRequestException(error.message);
     }
