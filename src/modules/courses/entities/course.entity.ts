@@ -46,6 +46,9 @@ export class Course {
   })
   status: Status;
 
+  @Column({ default: false })
+  isProduct: boolean;
+
   @OneToMany(() => Assessment, (assessment) => assessment.course)
   assessment: Assessment[];
 
