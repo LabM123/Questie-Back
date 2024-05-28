@@ -54,9 +54,11 @@ export class CoursesService {
           modules: {
             id: true,
             title: true,
+            status: true,
             lessons: {
               id: true,
               title: true,
+              status: true,
             },
           },
           categories: {
