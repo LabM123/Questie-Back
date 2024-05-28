@@ -1,5 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import {
+  IsBoolean,
   IsNotEmpty,
   IsOptional,
   IsString,
@@ -43,4 +44,13 @@ export class CreateCourseDto {
   @IsOptional()
   @IsString()
   status: Status;
+
+  @ApiProperty({
+    example: '"true" or "false".',
+    description:
+      'the definition of whether the course is going to be a product or not',
+  })
+  @IsOptional()
+  @IsBoolean()
+  isProduct: boolean;
 }
