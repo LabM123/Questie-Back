@@ -1,4 +1,4 @@
-import { IsNotEmpty, IsString, IsUUID, IsEnum } from 'class-validator';
+import { IsNotEmpty, IsString, IsUUID } from 'class-validator';
 
 enum ContentType {
   Title = 'title',
@@ -10,14 +10,13 @@ enum ContentType {
 
 export class CreateContentDto {
   @IsNotEmpty()
-  @IsEnum(ContentType)
-  type: ContentType;
-
-  @IsNotEmpty()
-  content: JSON;
-
-  @IsNotEmpty()
   @IsString()
   @IsUUID()
   lesson_id: string;
+
+  @IsNotEmpty()
+  contents: {
+    type: ContentType;
+    content: JSON;
+  }[];
 }
