@@ -1,23 +1,23 @@
-import { Status } from 'src/helpers/status.enum';
-import { Content } from 'src/modules/contents/entities/content.entity';
-import { Module } from 'src/modules/modules/entities/module.entity';
 import {
-  Column,
-  CreateDateColumn,
-  DeleteDateColumn,
   Entity,
-  JoinColumn,
-  ManyToOne,
-  OneToMany,
   PrimaryGeneratedColumn,
+  Column,
+  ManyToOne,
+  JoinColumn,
+  OneToMany,
+  CreateDateColumn,
   UpdateDateColumn,
+  DeleteDateColumn,
 } from 'typeorm';
-import { v4 as uuid } from 'uuid';
+import { Module } from 'src/modules/modules/entities/module.entity';
+import { Content } from 'src/modules/contents/entities/content.entity';
+import { Status } from 'src/helpers/status.enum';
+import { Progress } from 'src/modules/progress/entities/progress.entity';
 
 @Entity()
 export class Lesson {
   @PrimaryGeneratedColumn('uuid')
-  id: string = uuid();
+  id: string;
 
   @Column()
   title: string;
@@ -47,6 +47,9 @@ export class Lesson {
 
   @OneToMany(() => Content, (content) => content.lesson)
   contents: Content[];
+
+  @OneToMany(() => Progress, (progress) => progress.lesson)
+  progresses: Progress[];
 
   @CreateDateColumn()
   created_at: Date;

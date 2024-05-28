@@ -24,6 +24,7 @@ import { ScheduleModule } from '@nestjs/schedule';
 import { NotificationsModule } from './modules/notifications/notifications.module';
 import { AuthModule } from './modules/auth/auth.module';
 import { AssessmentModule } from './modules/assessment/assessment.module';
+import { ProgressModule } from './modules/progress/progress.module';
 
 @Module({
   imports: [
@@ -61,6 +62,7 @@ import { AssessmentModule } from './modules/assessment/assessment.module';
     MailModule,
     NotificationsModule,
     AssessmentModule,
+    ProgressModule,
   ],
   controllers: [],
   providers: [],
