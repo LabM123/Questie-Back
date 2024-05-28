@@ -1,7 +1,3 @@
-import { Assessment } from 'src/modules/assessment/entities/assessment.entity';
-import { Enrolment } from 'src/modules/enrolments/entities/enrolment.entity';
-import { Lesson } from 'src/modules/lessons/entities/lesson.entity';
-import { Stats } from 'src/modules/stats/entities/stats.entity';
 import {
   Entity,
   PrimaryGeneratedColumn,
@@ -11,11 +7,13 @@ import {
   DeleteDateColumn,
   OneToOne,
   JoinColumn,
-  ManyToMany,
-  JoinTable,
   Unique,
   OneToMany,
 } from 'typeorm';
+import { Assessment } from 'src/modules/assessment/entities/assessment.entity';
+import { Enrolment } from 'src/modules/enrolments/entities/enrolment.entity';
+import { Stats } from 'src/modules/stats/entities/stats.entity';
+import { Progress } from 'src/modules/progress/entities/progress.entity';
 
 @Entity()
 @Unique(['username', 'email'])
@@ -61,9 +59,8 @@ export class User {
   @OneToMany(() => Enrolment, (enrolment) => enrolment.user)
   enrolments: Enrolment[];
 
-  @ManyToMany(() => Lesson)
-  @JoinTable({ name: 'progress' })
-  lessons: Lesson[];
+  @OneToMany(() => Progress, (progress) => progress.user)
+  progresses: Progress[];
 
   @CreateDateColumn()
   created_at: Date;
