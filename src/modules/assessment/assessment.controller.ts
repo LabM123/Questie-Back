@@ -7,6 +7,7 @@ import {
   Delete,
   ConflictException,
   Put,
+  NotFoundException,
 } from '@nestjs/common';
 import {
   ApiTags,
@@ -20,7 +21,7 @@ import { CreateAssessmentDto } from './dto/create-assessment.dto';
 import { UpdateAssessmentDto } from './dto/update-assessment.dto';
 import { Assessment } from './entities/assessment.entity';
 
-@ApiTags('Assessment') // Agrupa los endpoints bajo el tag "assessment" en la documentación Swagger
+@ApiTags('Assessment')
 @Controller('assessment')
 export class AssessmentController {
   constructor(private readonly assessmentService: AssessmentService) {}
@@ -50,7 +51,7 @@ export class AssessmentController {
     }
   }
 
-  @Get(':courseId')
+  @Get('bycourse/:courseId')
   @ApiOperation({ summary: 'Obtener evaluaciones por ID de curso' })
   @ApiParam({ name: 'courseId', description: 'ID del curso' })
   @ApiResponse({
@@ -64,17 +65,6 @@ export class AssessmentController {
     return this.assessmentService.getAssessmentsForCourse(courseId);
   }
 
-  @Get()
-  @ApiOperation({ summary: 'Obtener todas las evaluaciones' })
-  @ApiResponse({
-    status: 200,
-    description: 'Lista de todas las evaluaciones',
-    type: [Assessment],
-  })
-  findAll() {
-    return this.assessmentService.findAll();
-  }
-
   @Get(':id')
   @ApiOperation({ summary: 'Obtener una evaluación por ID' })
   @ApiParam({ name: 'id', description: 'ID de la evaluación' })
@@ -85,7 +75,18 @@ export class AssessmentController {
   })
   @ApiResponse({ status: 404, description: 'Evaluación no encontrada' })
   findOne(@Param('id') id: string) {
-    return this.assessmentService.findOne(+id);
+    return this.assessmentService.findOne(id);
+  }
+
+  @Get()
+  @ApiOperation({ summary: 'Obtener todas las evaluaciones' })
+  @ApiResponse({
+    status: 200,
+    description: 'Lista de todas las evaluaciones',
+    type: [Assessment],
+  })
+  findAll() {
+    return this.assessmentService.findAll();
   }
 
   @Put(':id')
@@ -102,7 +103,7 @@ export class AssessmentController {
     @Param('id') id: string,
     @Body() updateAssessmentDto: UpdateAssessmentDto,
   ) {
-    return this.assessmentService.update(+id, updateAssessmentDto);
+    return this.assessmentService.update(id, updateAssessmentDto);
   }
 
   @Delete(':id')
@@ -111,6 +112,25 @@ export class AssessmentController {
   @ApiResponse({ status: 200, description: 'La evaluación ha sido eliminada.' })
   @ApiResponse({ status: 404, description: 'Evaluación no encontrada' })
   remove(@Param('id') id: string) {
-    return this.assessmentService.remove(+id);
+    return this.assessmentService.remove(id);
+  }
+
+  @Get('/scores/:courseId')
+  @ApiOperation({ summary: 'Obtener los scores de curso' })
+  @ApiParam({ name: 'courseId', description: 'ID del curso' }) // Cambiado 'id' a 'courseId'
+  @ApiResponse({
+    status: 200,
+    description: 'Detalles de la puntuación del curso',
+    type: [Assessment], // Asegurarse de que el tipo sea un array de Assessment
+  })
+  @ApiResponse({ status: 404, description: 'Evaluación no encontrada' })
+  async getScores(@Param('courseId') courseId: string): Promise<Assessment[]> {
+    const scores = await this.assessmentService.getScores(courseId);
+    if (!scores || scores.length === 0) {
+      throw new NotFoundException(
+        `Scores for course with ID ${courseId} not found`,
+      );
+    }
+    return scores;
   }
 }

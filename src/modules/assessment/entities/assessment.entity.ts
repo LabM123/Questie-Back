@@ -6,6 +6,7 @@ import {
   Column,
   ManyToOne,
   Unique,
+  CreateDateColumn,
 } from 'typeorm';
 import { v4 as uuid } from 'uuid';
 
@@ -23,4 +24,7 @@ export class Assessment {
 
   @ManyToOne(() => Course, (course) => course.assessment)
   course: Course;
+
+  @CreateDateColumn()
+  created_at: Date;
 }

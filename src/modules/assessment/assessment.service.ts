@@ -16,8 +16,9 @@ export class AssessmentService {
   constructor(
     @InjectRepository(Assessment)
     private assessmentsRepository: Repository<Assessment>,
+
     @InjectRepository(User)
-    private usersRepository: Repository<User>,
+    private readonly userRepository: Repository<User>,
     @InjectRepository(Course)
     private coursesRepository: Repository<Course>,
   ) {}
@@ -26,13 +27,20 @@ export class AssessmentService {
     createAssessmentDto: CreateAssessmentDto,
   ): Promise<Assessment> {
     const { userId, courseId, score } = createAssessmentDto;
-    const user = await this.usersRepository.findOne({ where: { id: userId } });
+    const user = await this.userRepository.findOne({
+      where: { id: userId },
+    });
+
+    if (!user) {
+      throw new NotFoundException(`User with id ${userId} not found`);
+    }
+
     const course = await this.coursesRepository.findOne({
       where: { id: courseId },
     });
 
-    if (!user || !course) {
-      throw new NotFoundException('User or Course not found');
+    if (!course) {
+      throw new NotFoundException(`Course with id ${courseId} not found`);
     }
 
     const existingAssessment = await this.assessmentsRepository.findOne({
@@ -57,19 +65,81 @@ export class AssessmentService {
     });
   }
 
-  findAll() {
-    return `This action returns all assessment`;
+  async getScores(courseId: string): Promise<Assessment[] | any> {
+    const course = await this.coursesRepository.findOne({
+      where: { id: courseId },
+    });
+    if (!course) {
+      throw new NotFoundException(`Course with ID ${courseId} not found`);
+    }
+
+    const assessments = await this.assessmentsRepository.find({
+      where: { course: { id: courseId } },
+      relations: ['user', 'course'],
+    });
+
+    if (!assessments || assessments.length === 0) {
+      throw new NotFoundException(
+        `No assessments found for course with ID ${courseId}`,
+      );
+    }
+
+    const totalScore = assessments.reduce(
+      (sum, assessment) => sum + assessment.score,
+      0,
+    );
+    const averageScore = totalScore / assessments.length;
+
+    const scores = assessments.map((a) => a.score);
+
+    const totalAssessments = assessments.length;
+    const maxScore = Math.max(...scores);
+    const minScore = Math.min(...scores);
+
+    return { averageScore, totalAssessments, maxScore, minScore };
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} assessment`;
+  async findAll(): Promise<Assessment[]> {
+    return this.assessmentsRepository.find({
+      relations: ['user', 'course'],
+    });
   }
 
-  update(id: number, updateAssessmentDto: UpdateAssessmentDto) {
-    return `This action updates a #${id} assessment`;
+  async findOne(id: string): Promise<Assessment> {
+    const assessment = await this.assessmentsRepository.findOne({
+      where: { id: id },
+    });
+    if (!assessment) {
+      throw new NotFoundException(`Assessment with ID ${id} not found`);
+    }
+    return assessment;
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} assessment`;
+  async update(
+    id: string,
+    updateAssessmentDto: UpdateAssessmentDto,
+  ): Promise<Assessment> {
+    const assessment = await this.assessmentsRepository.findOne({
+      where: { id },
+    });
+    if (!assessment) {
+      throw new NotFoundException(`Assessment with ID ${id} not found`);
+    }
+
+    const { score } = updateAssessmentDto;
+    assessment.score = score;
+
+    return this.assessmentsRepository.save(assessment);
+  }
+
+  async remove(id: string): Promise<void> {
+    const assessment = await this.assessmentsRepository.findOne({
+      where: { id },
+    });
+    if (!assessment) {
+      throw new NotFoundException(`Assessment with ID ${id} not found`);
+    }
+
+    await this.assessmentsRepository.update(id, {});
   }
 }
