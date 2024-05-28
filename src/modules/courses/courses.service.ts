@@ -59,6 +59,8 @@ export class CoursesService {
               id: true,
               title: true,
               status: true,
+              xp: true,
+              coins: true,
             },
           },
           categories: {
