@@ -45,6 +45,9 @@ export class ProductsService {
           entity = await this.courseRepository.findOne({
             where: { id: polymorphicEntityId },
           });
+          entity.isProduct = true;
+          await this.courseRepository.update(polymorphicEntityId, entity)
+          console.log(entity);
           break;
         case 'Module':
           entity = await this.moduleRepository.findOne({
