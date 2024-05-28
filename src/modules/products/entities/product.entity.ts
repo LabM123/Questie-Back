@@ -43,7 +43,7 @@ export class Product {
   @Column({ enum: PolymorphicEntityType, nullable: true })
   polymorphicEntityType: string;
 
-  @Column({ type: 'uuid', nullable: true, default: null })
+  @Column({ type: 'uuid', nullable: true, default: null, unique: true })
   polymorphicEntityId: string;
 
   @CreateDateColumn()
