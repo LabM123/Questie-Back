@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { User } from '../users/entities/user.entity';
@@ -22,7 +22,11 @@ export class StatsService {
       throw new NotFoundException('User not found');
     }
 
+    if (Number(user.stats.coins) + Number(coins) < 0)
+      throw new BadRequestException('Insufficient coins');
+
     user.stats.coins = Number(user.stats.coins) + Number(coins);
+
     await this.statsRepository.save(user.stats);
 
     return user.stats;
