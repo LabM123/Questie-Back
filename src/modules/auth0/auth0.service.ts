@@ -32,7 +32,7 @@ export class Auth0Service {
       const payload = {
         id: foundUser.id,
         email: foundUser.email,
-        isAdmin: foundUser.role === 'admin',
+        isAdmin: foundUser.role,
         sub: foundUser.id,
       };
 
@@ -69,7 +69,7 @@ export class Auth0Service {
       const payload = {
         id: user.id,
         email: user.email,
-        isAdmin: user.role === 'admin',
+        isAdmin: user.role,
         sub: user.id,
       };
 
