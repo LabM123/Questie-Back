@@ -6,6 +6,7 @@ enum ContentType {
   Text = 'text',
   Image = 'image',
   Video = 'video',
+  Questie = 'questie',
 }
 
 export class CreateContentDto {

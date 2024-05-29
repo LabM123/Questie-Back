@@ -90,13 +90,26 @@ export class ProgressService {
     }
   }
 
-  async getProgressForUser(userId: string): Promise<Progress[]> {
-    await this.findUserById(userId); // Ensure user exists
+  async getProgressForUser(
+    userId: string,
+  ): Promise<{ id: string; userId: string; lessonId: string }[]> {
+    await this.findUserById(userId);
 
-    return this.progressRepository.find({
+    const progressRecords = await this.progressRepository.find({
       where: { user: { id: userId } },
-      relations: ['lesson'],
+      select: {
+        id: true,
+        user: { id: true },
+        lesson: { id: true },
+      },
+      relations: ['user', 'lesson'],
     });
+
+    return progressRecords.map((record) => ({
+      id: record.id,
+      userId: record.user.id,
+      lessonId: record.lesson.id,
+    }));
   }
 
   async findOne(id: string): Promise<Progress> {
