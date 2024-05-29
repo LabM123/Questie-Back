@@ -5,13 +5,18 @@ import * as bcrypt from 'bcrypt';
 import { User } from '../users/entities/user.entity';
 import { CreateUserDto } from '../users/dto/create-user.dto';
 import { JwtService } from '@nestjs/jwt';
+import { MailService } from '../mail/mail.service';
+import { Stats } from '../stats/entities/stats.entity';
 
 @Injectable()
 export class Auth0Service {
   constructor(
     @InjectRepository(User)
     private userRepository: Repository<User>,
+    @InjectRepository(Stats)
+    private readonly statsRepository: Repository<Stats>,
     private readonly jwtService: JwtService,
+    private readonly mailService: MailService,
   ) {}
 
   async createAuth0User(createUserDto: CreateUserDto): Promise<User | any> {
@@ -34,6 +39,16 @@ export class Auth0Service {
       const token = this.jwtService.sign(payload, {
         algorithm: 'HS256',
       });
+
+      const stats = await this.statsRepository.findOne({
+        where: { user: foundUser },
+      });
+
+      if (!stats) {
+        await this.statsRepository.save(
+          this.statsRepository.create({ user: foundUser }),
+        );
+      }
 
       return { token, user: foundUser, message: 'Login successful' };
     }
@@ -62,6 +77,16 @@ export class Auth0Service {
       const token = this.jwtService.sign(payload, {
         algorithm: 'HS256',
       });
+
+      await this.statsRepository.save(
+        this.statsRepository.create({ user: foundUser }),
+      );
+
+      await this.mailService.sendMail(
+        foundUser.email,
+        'Register Successful',
+        'Welcome to Questie',
+      );
 
       return { token, user, message: 'User creation successful' };
     } catch (error) {
