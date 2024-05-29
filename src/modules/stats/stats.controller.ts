@@ -11,6 +11,7 @@ import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { Roles } from '../auth/decorators/roles.decorator';
 import { Role } from '../auth/decorators/roles.enum';
 import { RolesGuard } from '../auth/guard/roles.guard';
+import { PurchaseGuard } from './guards/purchase.guard';
 import { StatsService } from './stats.service';
 
 @ApiTags('Stats')
@@ -19,8 +20,8 @@ export class StatsController {
   constructor(private readonly statsService: StatsService) {}
 
   @Post('coins/:userId')
-  @UseGuards(AuthGuard, RolesGuard)
-  @Roles(Role.admin)
+  @UseGuards(AuthGuard, RolesGuard, PurchaseGuard)
+  @Roles(Role.admin, Role.user)
   @ApiBearerAuth()
   async addCoins(
     @Param('userId', ParseUUIDPipe) userId: string,
@@ -30,8 +31,8 @@ export class StatsController {
   }
 
   @Post('xp/:userId')
-  @UseGuards(AuthGuard, RolesGuard)
-  @Roles(Role.admin)
+  @UseGuards(AuthGuard, RolesGuard, PurchaseGuard)
+  @Roles(Role.admin, Role.user)
   @ApiBearerAuth()
   async addXp(
     @Param('userId', ParseUUIDPipe) userId: string,
