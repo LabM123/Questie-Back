@@ -44,6 +44,7 @@ export class Auth0Service {
         where: { user: foundUser },
       });
 
+
       if (stats === null || stats === undefined) {
         const stats = this.statsRepository.create({ user: foundUser });
         await this.statsRepository.save(stats);
@@ -86,7 +87,6 @@ export class Auth0Service {
         'Register Successful',
         'Welcome to Questie',
       );
-
       return { token, message: 'User creation successful' };
     } catch (error) {
       throw new InternalServerErrorException('Error creating user');
