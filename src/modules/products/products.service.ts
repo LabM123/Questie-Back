@@ -128,7 +128,7 @@ export class ProductsService {
 
     const idCourse = (await product).polymorphicEntityId;
 
-    const changeCourse = await this.courseRepository.update(idCourse, {
+    await this.courseRepository.update(idCourse, {
       isProduct: false,
     });
 
