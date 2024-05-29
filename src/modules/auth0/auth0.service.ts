@@ -40,55 +40,55 @@ export class Auth0Service {
         algorithm: 'HS256',
       });
 
-      let stats = await this.statsRepository.findOne({
+      const stats = await this.statsRepository.findOne({
         where: { user: foundUser },
       });
 
       if (!stats) {
-        stats = this.statsRepository.create({ user: foundUser });
-        await this.statsRepository.save(stats);
+        const sts = this.statsRepository.create({ user: foundUser });
+        await this.statsRepository.save(sts);
       }
 
       return { token, message: 'Login successful' };
-    }
+    } else {
+      try {
+        const encryptedPassword = await bcrypt.hash(createUserDto.password, 10);
+        if (!encryptedPassword)
+          throw new InternalServerErrorException(
+            'Password could not be encrypted',
+          );
 
-    try {
-      const encryptedPassword = await bcrypt.hash(createUserDto.password, 10);
-      if (!encryptedPassword)
-        throw new InternalServerErrorException(
-          'Password could not be encrypted',
+        const newUser = this.userRepository.create({
+          ...createUserDto,
+          password: encryptedPassword,
+        });
+
+        const user = await this.userRepository.save(newUser);
+
+        const payload = {
+          id: user.id,
+          email: user.email,
+          isAdmin: user.role,
+          sub: user.id,
+        };
+
+        const token = this.jwtService.sign(payload, {
+          algorithm: 'HS256',
+        });
+
+        const stats = this.statsRepository.create({ user: user });
+        await this.statsRepository.save(stats);
+
+        await this.mailService.sendMail(
+          user.email,
+          'Register Successful',
+          'Welcome to Questie',
         );
 
-      const newUser = this.userRepository.create({
-        ...createUserDto,
-        password: encryptedPassword,
-      });
-
-      const user = await this.userRepository.save(newUser);
-
-      const payload = {
-        id: user.id,
-        email: user.email,
-        isAdmin: user.role,
-        sub: user.id,
-      };
-
-      const token = this.jwtService.sign(payload, {
-        algorithm: 'HS256',
-      });
-
-      const stats = this.statsRepository.create({ user: user });
-      await this.statsRepository.save(stats);
-
-      await this.mailService.sendMail(
-        user.email,
-        'Register Successful',
-        'Welcome to Questie',
-      );
-
-      return { token, message: 'User creation successful' };
-    } catch (error) {
-      throw new InternalServerErrorException('Error creating user');
+        return { token, message: 'User creation successful' };
+      } catch (error) {
+        throw new InternalServerErrorException('Error creating user');
+      }
     }
   }
 }
