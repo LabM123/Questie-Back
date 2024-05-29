@@ -79,9 +79,7 @@ export class AssessmentService {
     });
 
     if (!assessments || assessments.length === 0) {
-      throw new NotFoundException(
-        `No assessments found for course with ID ${courseId}`,
-      );
+      return { averageScore: 0, totalAssessments: 0, maxScore: 0, minScore: 0 };
     }
 
     const totalScore = assessments.reduce(
