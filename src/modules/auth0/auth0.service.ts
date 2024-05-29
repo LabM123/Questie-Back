@@ -32,7 +32,7 @@ export class Auth0Service {
       const payload = {
         id: foundUser.id,
         email: foundUser.email,
-        isAdmin: foundUser.role,
+        isAdmin: foundUser.role === 'admin', // Asegúrate de que esto sea un booleano
         sub: foundUser.id,
       };
 
@@ -40,13 +40,12 @@ export class Auth0Service {
         algorithm: 'HS256',
       });
 
-      const stats = await this.statsRepository.findOne({
+      let stats = await this.statsRepository.findOne({
         where: { user: foundUser },
       });
 
-
-      if (stats === null || stats === undefined) {
-        const stats = this.statsRepository.create({ user: foundUser });
+      if (!stats) {
+        stats = this.statsRepository.create({ user: foundUser });
         await this.statsRepository.save(stats);
       }
 
@@ -70,7 +69,7 @@ export class Auth0Service {
       const payload = {
         id: user.id,
         email: user.email,
-        isAdmin: user.role,
+        isAdmin: user.role === 'admin', // Asegúrate de que esto sea un booleano
         sub: user.id,
       };
 
@@ -78,15 +77,15 @@ export class Auth0Service {
         algorithm: 'HS256',
       });
 
-      await this.statsRepository.save(
-        this.statsRepository.create({ user: foundUser }),
-      );
+      const stats = this.statsRepository.create({ user: user });
+      await this.statsRepository.save(stats);
 
       await this.mailService.sendMail(
-        foundUser.email,
+        user.email,
         'Register Successful',
         'Welcome to Questie',
       );
+
       return { token, message: 'User creation successful' };
     } catch (error) {
       throw new InternalServerErrorException('Error creating user');
