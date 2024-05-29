@@ -126,6 +126,12 @@ export class ProductsService {
       throw new NotFoundException(`Product not found`);
     }
 
+    const idCourse = (await product).polymorphicEntityId;
+
+    const changeCourse = await this.courseRepository.update(idCourse, {
+      isProduct: false,
+    });
+
     const deletedProduct = await this.productRepository.update(id, {
       deleted_at: new Date(),
     });
