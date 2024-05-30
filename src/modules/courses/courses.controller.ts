@@ -225,4 +225,24 @@ export class CoursesController {
   async remove(@Param('id', ParseUUIDPipe) id: string) {
     return this.coursesService.deleteCourse(id);
   }
+
+  @ApiBearerAuth()
+  @Delete('category/:courseId')
+  @Roles(Role.admin)
+  @UseGuards(AuthGuard, RolesGuard)
+  @ApiOperation({
+    summary: 'Delete category of a course',
+    description: 'Delete a category of a course by its ID.',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'The category has been successfully deleted from the course.',
+  })
+  @ApiResponse({ status: 404, description: 'category or course not found.' })
+  async deleteCategoryFromCourse(
+    @Param('courseId') courseId: string,
+    @Body('categoryId') categoryId: string,
+  ) {
+    return this.coursesService.deleteCategoryFromCourse(courseId, categoryId);
+  }
 }

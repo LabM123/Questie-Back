@@ -198,6 +198,27 @@ export class CoursesService {
     }
   }
 
+  async deleteCategoryFromCourse(courseId: string, categoryId: string) {
+    const course = await this.coursesRepository.findOne({
+      relations: {
+        categories: true,
+      },
+      where: { id: courseId },
+    });
+
+    if (!course) {
+      throw new NotFoundException('Course not found');
+    }
+
+    course.categories = course.categories.filter(
+      (category) => category.id !== categoryId,
+    );
+
+    const updatedCourse = await this.coursesRepository.save(course);
+
+    return updatedCourse;
+  }
+
   async deleteCourse(id: string) {
     try {
       const foundedCourse = await this.coursesRepository.findOne({
