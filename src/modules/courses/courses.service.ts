@@ -7,14 +7,18 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Course } from './entities/course.entity';
 import { Repository } from 'typeorm';
 import { CreateCourseDto } from './dto/create-course.dto';
-import { UpdateCourseDto } from './dto/update-course.dto';
+/* import { UpdateCourseDto } from './dto/update-course.dto'; */
 import { UploadfileService } from '../uploadfile/uploadfile.service';
 import slugify from 'slugify';
+import { Category } from '../categories/entities/category.entity';
+import { UpdateCourseDto } from './dto/update-course.dto';
 
 @Injectable()
 export class CoursesService {
   constructor(
     @InjectRepository(Course) private coursesRepository: Repository<Course>,
+    @InjectRepository(Category)
+    private categoryRepository: Repository<Category>,
     private readonly uploadfileService: UploadfileService,
   ) {}
 
@@ -96,6 +100,10 @@ export class CoursesService {
           'Course image and background image are required',
         );
 
+      const { categories, ...courseWithoutCategory } = createCourseDto;
+
+      console.log(categories);
+
       const courseImgUrl = await this.uploadfileService.uploadFile(
         files.courseImg[0],
       );
@@ -112,7 +120,7 @@ export class CoursesService {
 
       const newCourse = await this.coursesRepository.save(
         this.coursesRepository.create({
-          ...createCourseDto,
+          ...courseWithoutCategory,
           image: courseImgUrl.url,
           bg_image: courseBgImgUrl.url,
           slug,
@@ -136,7 +144,9 @@ export class CoursesService {
     try {
       const foundCourse = await this.coursesRepository.findOne({
         where: { id },
+        relations: ['categories'],
       });
+
       if (!foundCourse) throw new NotFoundException('Course not found');
 
       if (files) {
@@ -146,10 +156,11 @@ export class CoursesService {
           ).url;
         }
 
-        if (files.courseBgImg && files.courseBgImg.length)
+        if (files.courseBgImg && files.courseBgImg.length) {
           foundCourse.bg_image = (
             await this.uploadfileService.uploadFile(files.courseBgImg[0])
           ).url;
+        }
       }
 
       if (updateCourseDto.title) {
@@ -163,14 +174,24 @@ export class CoursesService {
         foundCourse.slug = slug;
       }
 
-      await this.coursesRepository.update(id, {
-        ...foundCourse,
-        ...updateCourseDto,
-      });
+      if (updateCourseDto.categories) {
+        const categories = await Promise.all(
+          updateCourseDto.categories.map((cat) =>
+            this.categoryRepository.findOne({ where: { id: cat } }),
+          ),
+        );
+
+        foundCourse.categories = [
+          ...foundCourse.categories,
+          ...categories.filter((cat) => cat),
+        ];
+      }
+
+      await this.coursesRepository.save(foundCourse);
 
       return await this.coursesRepository.findOne({
         where: { id },
-        loadRelationIds: true,
+        relations: ['categories'],
       });
     } catch (error: any) {
       throw new BadRequestException(error.message);
