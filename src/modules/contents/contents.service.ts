@@ -45,7 +45,7 @@ export class ContentsService {
     }
   }
 
-  async create(createContentDto: CreateContentDto): Promise<Content[]> {
+  async create(createContentDto: CreateContentDto): Promise<Content> {
     const { lesson_id, contents } = createContentDto;
 
     try {
@@ -55,13 +55,13 @@ export class ContentsService {
       });
 
       if (!foundLesson) throw new NotFoundException('Lesson not found');
-      console.log(contents);
-      const newContents = contents.map((content) => ({
-        ...content,
-        lesson: foundLesson,
-      }));
 
-      return await this.contentsRepository.save(newContents);
+      const newContent = this.contentsRepository.create({
+        content: contents.content,
+        lesson: foundLesson,
+      });
+
+      return await this.contentsRepository.save(newContent);
     } catch (error: any) {
       throw new BadRequestException(error.message);
     }

@@ -18,5 +18,5 @@ export class CreateContentDto {
   contents: {
     type: ContentType;
     content: JSON;
-  }[];
+  };
 }
