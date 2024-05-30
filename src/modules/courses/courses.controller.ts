@@ -23,11 +23,11 @@ import {
 import { FileFieldsInterceptor } from '@nestjs/platform-express';
 import { CoursesService } from './courses.service';
 import { CreateCourseDto } from './dto/create-course.dto';
-import { UpdateCourseDto } from './dto/update-course.dto';
 import { Roles } from '../auth/decorators/roles.decorator';
 import { Role } from '../auth/decorators/roles.enum';
 import { AuthGuard } from '../auth/guard/auth.guard';
 import { RolesGuard } from '../auth/guard/roles.guard';
+import { UpdateCourseDto } from './dto/update-course.dto';
 
 @ApiTags('Courses')
 @Controller('courses')
@@ -183,6 +183,7 @@ export class CoursesController {
         title: { type: 'string' },
         headline: { type: 'string' },
         description: { type: 'string' },
+        categories: { type: 'string' },
       },
     },
   })

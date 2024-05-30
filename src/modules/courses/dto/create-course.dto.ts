@@ -1,5 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import {
+  IsArray,
   IsBoolean,
   IsNotEmpty,
   IsOptional,
@@ -53,4 +54,8 @@ export class CreateCourseDto {
   @IsOptional()
   @IsBoolean()
   isProduct: boolean;
+
+  @IsOptional()
+  @IsArray()
+  categories: string[];
 }
