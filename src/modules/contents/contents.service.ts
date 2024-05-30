@@ -59,6 +59,7 @@ export class ContentsService {
       const newContent = this.contentsRepository.create({
         content: contents.content,
         lesson: foundLesson,
+        type: contents.type,
       });
 
       return await this.contentsRepository.save(newContent);
