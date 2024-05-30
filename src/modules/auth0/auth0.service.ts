@@ -40,15 +40,7 @@ export class Auth0Service {
         algorithm: 'HS256',
       });
 
-      const stats = await this.statsRepository.findOne({
-        where: { user: foundUser },
-      });
-
-      if (!stats) {
-        const sts = this.statsRepository.create({ user: foundUser });
-        await this.statsRepository.save(sts);
-      }
-
+      
       return { token, message: 'Login successful' };
     } else {
       try {
@@ -57,21 +49,25 @@ export class Auth0Service {
           throw new InternalServerErrorException(
             'Password could not be encrypted',
           );
+          
+          const newUser = this.userRepository.create({
+            ...createUserDto,
+            password: encryptedPassword,
+          });
+          
+          const user = await this.userRepository.save(newUser);
 
-        const newUser = this.userRepository.create({
-          ...createUserDto,
-          password: encryptedPassword,
-        });
+          await this.statsRepository.save(
+            this.statsRepository.create({ user }),
+          );
 
-        const user = await this.userRepository.save(newUser);
-
-        const payload = {
+          const payload = {
           id: user.id,
           email: user.email,
           isAdmin: user.role,
           sub: user.id,
         };
-
+        
         const token = this.jwtService.sign(payload, {
           algorithm: 'HS256',
         });
